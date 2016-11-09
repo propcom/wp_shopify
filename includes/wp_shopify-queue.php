@@ -8,13 +8,15 @@
 
     public $stack;
     public $stackIdx;
-    public $shopify;
     public $urls;
-    public $currentStack;
+    public $query;
+    public $res_type;
 
-    public function __construct ( $urls ) {
+    public function __construct ( $urls, $query = [], $res_type = ['get_product'] ) {
 
       $this->urls = $urls;
+      $this->query = $query;
+      $this->res_type = $res_type;
       $this->stackIdx = 0;
       $this->stack = [];
 
@@ -24,8 +26,13 @@
 
       if( !empty($this->urls) ) {
 
-        $resource = Wordpress_Shopify_Api::forge( $this->urls[$this->stackIdx] )->get_product();
-        $this->doNext( $resource, $callback );
+        $resource = Wordpress_Shopify_Api::forge( $this->urls[$this->stackIdx], $this->query[$this->stackIdx] );
+
+        $this->doNext( call_user_func( [$resource, $this->res_type[$this->stackIdx] ] ), $callback );
+
+      } else {
+
+        call_user_func($callback, $this->stack);
 
       }
 
@@ -33,18 +40,24 @@
 
     protected function doNext ( $res, $callback ) {
 
-      if($res && isset($res->id)) {
+      if( isset($res->id) || isset($res[0]) ) {
 
-        $this->stack[] = $res;
-        array_shift($this->urls);
+        if( is_array($res) ) {
 
-        if( count($this->urls) > 0 ) {
-
-          $this->queue($callback);
+          $this->stack = $res;
 
         } else {
 
-          call_user_func($callback, $this->stack);
+          $this->stack[] = $res;
+
+        }
+
+        if( count($this->urls) > 0 ) {
+
+          array_shift($this->urls);
+          array_shift($this->query);
+
+          $this->queue($callback);
 
         }
 

@@ -59,7 +59,7 @@
 
       if( !empty($query) ) {
 
-        self::$base_url = self::build_base_url().$endpoint.'?'.http_build_query($query);
+        self::$base_url = self::build_base_url().$endpoint.'?'.urldecode(http_build_query($query));
 
       } else {
 
@@ -112,6 +112,17 @@
     public static function get_product () {
 
       return ( isset( self::$data->product ) ? self::$data->product : null );
+
+    }
+
+    /*
+    * Function: get_variant
+    * Description: Gets single variant from shop
+    * Return: Variant
+    */
+    public static function get_variant () {
+
+      return ( isset( self::$data->variant ) ? self::$data->variant : null );
 
     }
 
