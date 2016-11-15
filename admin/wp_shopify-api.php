@@ -30,6 +30,12 @@
     private static $data = '';
 
     /*
+    * Var: headers
+    * Description: Holder for response headers
+    */
+    private static $headers = [];
+
+    /*
     * Var: endpoint
     * Description: Holder for current endpoint being used
     */
@@ -160,6 +166,32 @@
     }
 
     /*
+    * Function: api_limit_close
+    * Description: Checks if api limit is close to exceeding
+    * Return: True/False
+    */
+    public static function api_limit_close () {
+
+      $limit_header = 'http_x_shopify_shop_api_call_limit';
+
+      if( isset( self::$headers[$limit_header] ) ) {
+
+        $max = intval( explode('/', self::$headers[$limit_header])[1] );
+        $calls = intval( explode('/', self::$headers[$limit_header])[0] );
+
+        if( $calls >= ($max - 1) ) {
+
+          return true;
+
+        }
+
+      }
+
+      return false;
+
+    }
+
+    /*
     * Function: send_get_request
     * Description: Wrapper for wp_remote_get
     * Return: Response or null on failure
@@ -170,6 +202,7 @@
 
       if( is_array( $response ) ) {
 
+        self::$headers = $response['headers'];
         $encode = json_decode($response['body']);
 
         if( !isset( $encode->errors ) ) {
