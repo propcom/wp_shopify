@@ -166,6 +166,17 @@
     }
 
     /*
+    * Function: get_ab_checkouts
+    * Description: Gets list of abandoned checkouts
+    * Return: Abandoned Checkouts
+    */
+    public static function get_ab_checkouts () {
+
+      return ( isset( self::$data->checkouts ) ? self::$data->checkouts : null );
+
+    }
+
+    /*
     * Function: api_limit_close
     * Description: Checks if api limit is close to exceeding
     * Return: True/False
