@@ -122,6 +122,7 @@
           if( !empty($wordpress_user->results) ) {
 
             $user_exists = ( isset($wordpress_user->results[0]->ID) ? true : false );
+            $user_id = $wordpress_user->results[0]->ID;
             $user = get_user_meta( $wordpress_user->results[0]->ID, '_ws_user_meta_'.$checkout->id );
 
           }
@@ -145,8 +146,8 @@
           </td>
 
           <td id="customer-<?= $checkout->customer->id ?>" class="placed-by  column-tags">
-            <? if($user): ?>
-              <a href="<?= esc_url( site_url('/wp-admin/user-edit.php?user_id=') ).$user ?>"><?= $checkout->customer->first_name.' '.$checkout->customer->last_name ?></a>
+            <? if($user_exists): ?>
+              <a href="<?= esc_url( site_url('/wp-admin/user-edit.php?user_id=') ).$user_id ?>"><?= $checkout->customer->first_name.' '.$checkout->customer->last_name ?></a>
             <? else: ?>
               <?= $checkout->customer->first_name.' '.$checkout->customer->last_name ?>
             <? endif; ?>
