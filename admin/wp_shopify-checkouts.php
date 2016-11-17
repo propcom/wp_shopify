@@ -19,10 +19,10 @@
         $post_email = str_replace( '_', '.', explode('-', $key)[1] );
         $emailer = new Email_Helper( is_user_logged_in(), $post_email );
 
-        $unique_id = explode(':', $value)[0];
-        $checkout_url = explode(':', $value)[1];
+        $unique_id = explode('_', $value)[0];
+        $checkout_url = explode('_', $value)[1];
 
-        if( $emailer->get_status() == false ) {
+        if( $emailer->get_status($unique_id) == false ) {
 
           $sent = $emailer->send_email( 'You have Abandoned your Cart', [
 
@@ -35,7 +35,7 @@
 
           print (
 
-            '<div class="notice notice-success is-dismissible"><p>'.$post_email.' has already been notified, did not send email.</p></div>'
+            '<div class="notice notice-error is-dismissible"><p>'.$post_email.' has already been notified.</p></div>'
 
           );
 
@@ -51,7 +51,7 @@
 
           $emailer->set_status(true, $unique_id);
 
-        } elseif(!$sent && $emailer->get_status() == false) {
+        } elseif(!$sent && $emailer->get_status($unique_id) == false) {
 
           print (
 
@@ -131,7 +131,7 @@
 
           <th scope="row" class="check-column">
             <label class="screen-reader-text" for="cb-select-<?= $checkout->id ?>"></label>
-            <input id="cb-select-<?= $checkout->id ?>" type="checkbox" name="email-<?= $checkout->email ?>" value="<?= $checkout->id ?>:<?= esc_url( $checkout->abandoned_checkout_url ) ?>">
+            <input id="cb-select-<?= $checkout->id ?>" type="checkbox" name="email-<?= $checkout->email ?>" value="<?= $checkout->id ?>_<?= esc_url( $checkout->abandoned_checkout_url ) ?>">
           </th>
 
           <td class="checkout  column-tags  column-primary">

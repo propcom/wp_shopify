@@ -23,9 +23,10 @@
 
     public function send_email ( $subject, $contents ) {
 
-      global $info;
+      global $info, $image;
 
       $info = (object)$contents;
+      $image = $this->image_uri( get_template_directory().'/assets/img/logo.png' );
 
       $email_obj = new stdClass();
 
@@ -78,7 +79,7 @@
 
     }
 
-    public function get_status () {
+    public function get_status ( $unique_key = 0 ) {
 
       $args = [
 
@@ -91,7 +92,7 @@
 
       if( !empty($user->results) ) {
 
-        return get_user_meta( $user->results[0]->ID, $this->user_meta_key );
+        return get_user_meta( $user->results[0]->ID, $this->user_meta_key.'_'.$unique_key );
 
       }
 
@@ -110,6 +111,18 @@
       }
 
       return null;
+
+    }
+
+    public function image_uri ($path) {
+
+      if( ($type = pathinfo($path, PATHINFO_EXTENSION)) ) {
+
+        $data = file_get_contents($path);
+
+        return 'data:image/'.$type.';base64,'.base64_encode($data);
+
+      }
 
     }
 
