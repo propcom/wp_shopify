@@ -84,19 +84,9 @@
 
         <th scope="col" id="checkout" class="manage-column  column-tags  column-primary">Checkout</th>
 
-        <th scope="col" id="date" class="manage-column  column-tags  sortable  asc">
-          <a href="<?= esc_url( site_url('/') ) ?>">
-            <span>Date</span>
-            <span class="sorting-indicator"></span>
-          </a>
-        </th>
+        <th scope="col" id="date" class="manage-column  column-tags">Date</th>
 
-        <th scope="col" id="placed-by" class="manage-column  column-tags  column-primary  sorted  desc">
-          <a href="<?= esc_url( site_url('/') ) ?>">
-            <span>Placed By</span>
-            <span class="sorting-indicator"></span>
-          </a>
-        </th>
+        <th scope="col" id="placed-by" class="manage-column  column-tags">Placed By</th>
 
         <th scope="col" id="email-status" class="manage-column  column-tags">Email Status</th>
 
