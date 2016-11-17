@@ -2,3 +2,18 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.status-label {
+  margin-left: 5px;
+  padding: 5px;
+  display: inline-block;
+  border-radius: 3px;
+}
+
+.status-label.sent {
+  background-color: #b2d86a;
+}
+
+.status-label.pending {
+  background-color: #fec97d;
+}
