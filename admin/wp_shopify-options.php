@@ -76,6 +76,17 @@
 
 			);
 
+			add_submenu_page(
+
+				'shopify-manager',
+				'Abandoned Checkouts',
+				'Checkouts',
+				'administrator',
+				'abandoned-checkout',
+				[ $this, 'render_ac_page' ]
+
+			);
+
 		}
 
 		function render_page() {
@@ -98,6 +109,26 @@
 
 		}
 
+		function render_ac_page() {
+
+			$this->options = get_option( 'prop_shopify_checkout' ); ?>
+
+			<div class="wrap">
+				<h1>Checkouts</h1>
+				<form method="post" action="">
+					<?
+						settings_fields( 'propeller_shopify_checkout' );
+						do_settings_sections( 'shopify-checkout' );
+						require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wp_shopify-checkouts.php';
+						submit_button('Send Email');
+					?>
+				</form>
+			</div>
+
+			<?
+
+		}
+
 		function section_text() {
 
 			print 'Enter your site settings below:';
@@ -113,12 +144,19 @@
 
 			);
 
+			register_setting(
+
+				'propeller_shopify_checkout',
+				'prop_shopify_checkout'
+
+			);
+
 		}
 
 		function define_settings() {
 
 			/**
-			 * @desc Site Settings
+			 * @desc Manager Settings
 			 */
 
 			add_settings_section(
@@ -177,6 +215,19 @@
 
 			);
 
+			/**
+			 * @desc Checkout Settings
+			 */
+
+			add_settings_section(
+
+				'shopify_checkout_settings',
+				'Abandoned Checkouts',
+				[ $this, 'print_section_checkout_info' ],
+				'shopify-checkout'
+
+			);
+
 		}
 
 		function add_field( array $args ) {
@@ -232,6 +283,12 @@
 		function print_section_info() {
 
 			print 'Please enter your Shopify settings below:';
+
+		}
+
+		function print_section_checkout_info() {
+
+			print 'See your abandoned checkouts below:';
 
 		}
 

@@ -17,6 +17,8 @@
 
   define( 'ENDPOINT_COLLECTS', '/admin/collects.json' );
 
+  define( 'ENDPOINT_CHECKOUTS', '/admin/checkouts.json' );
+
   define( 'ENDPOINT_COLLECTION', '/admin/custom_collections' );
 
   define( 'ENDPOINT_COLLECTIONS', '/admin/custom_collections.json' );
