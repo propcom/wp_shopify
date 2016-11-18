@@ -79,7 +79,7 @@
 
           try {
 
-            self::$data = self::send_get_request( self::$base_url, self::$http_args );
+            self::$data = self::send_get_request( self::$base_url, self::$http_args, true );
 
           } catch (Wordpress_Shopify_Api_Exception $exception) {
 
@@ -207,7 +207,7 @@
     * Description: Wrapper for wp_remote_get
     * Return: Response or null on failure
     */
-    private static function send_get_request ( $url, $args ) {
+    private static function send_get_request ( $url, $args, $excep = false ) {
 
       $response = wp_remote_get( $url, $args );
 
@@ -222,7 +222,15 @@
 
         } else {
 
-          throw new Wordpress_Shopify_Api_Exception( 'API Error: '.print_r($encode->errors) );
+          if($excep) {
+
+            throw new Wordpress_Shopify_Api_Exception( 'API Error: '.implode($encode->errors) );
+
+          } else {
+
+            return 'API Error: '.implode($encode->errors);
+
+          }
 
         }
 
