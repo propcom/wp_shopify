@@ -85,6 +85,8 @@
 
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wp_shopify-options.php';
 
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wp_shopify-rest.php';
+
 		}
 
 		/**
