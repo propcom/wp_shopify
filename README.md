@@ -1,5 +1,7 @@
 <h1>Wordpress Shopify Plugin</h1>
 
+<img src="https://github.com/encreddesign/wp_shopify/blob/master/admin/images/plugin-logo.png" alt="Plugin Logo"/>
+
 <p>
  Basic plugin for connecting your Shopify store to a Wordpress site.
  Features Available:
