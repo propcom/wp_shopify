@@ -222,7 +222,7 @@
 
         } else {
 
-          throw new Wordpress_Shopify_Api_Exception( 'API Error: '.$encode->errors );
+          throw new Wordpress_Shopify_Api_Exception( 'API Error: '.print_r($encode->errors) );
 
         }
 

@@ -17,3 +17,11 @@
 .status-label.pending {
   background-color: #fec97d;
 }
+
+.spinsym {
+  margin-left: 5px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+	background: url('../images/spinner.gif');
+}

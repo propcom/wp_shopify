@@ -11,6 +11,10 @@
 
 <? if($collections): ?>
 
+  <script type="text/javascript">
+    window.endpoint = '<?= get_home_url().'/wp-json/shopify/v1/products/' ?>';
+  </script>
+
   <table class="wp-list-table  widefat  fixed  striped  posts  shortcodes">
 
     <thead>
@@ -34,7 +38,8 @@
       <tr id="collection-list">
 
         <td class="collection  column-tags  column-primary">
-          <select name="collection-select">
+          <select class="js-collection-select" name="collection-select">
+            <option value="">Select Collection</option>
             <? foreach($collections as $collection): ?>
               <option value="<?= $collection->id ?>"><?= $collection->title ?></option>
             <? endforeach; ?>
@@ -42,17 +47,17 @@
         </td>
 
         <td class="products  column-tags">
-          <select name="product-select">
-            <option value="">Select Product</option>
+          <select class="js-product-select" name="product-select">
+            <option value="">---</option>
           </select>
         </td>
 
         <td class="shortcode  column-tags">
-          <input type="text" name="shortcode-none" value="">
+          <input class="js-shortcode-text" type="text" name="shortcode-none" value="">
         </td>
 
         <td class="total  column-author">
-          <input class="button  button-primary" type="button" name="copy-shortcode" value="Copy Shortcode">
+          <input class="button  button-primary  js-copy-shortcode" type="button" name="copy-shortcode" value="Copy Shortcode">
         </td>
 
       </tr>
