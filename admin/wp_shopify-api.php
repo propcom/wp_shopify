@@ -54,12 +54,31 @@
     private static $query = [];
 
     /*
+    * Var: inventory
+    * Description: Holder for inventory quantity
+    */
+    private static $inventory = [];
+
+    /*
+    * Var: track
+    * Description: Track low stock on inventory quantity
+    */
+    private static $track = false;
+
+    /*
+    * Var: track_level
+    * Description: Track stock level on inventory quantity
+    */
+    private static $track_level = 0;
+
+    /*
     * Function: forge
     * Description: Call api to store response
     * Return: New Instance
     */
     public static function forge ( $endpoint, $query = [], $exc_handler = true ) {
 
+      self::$inventory = [];
       self::$query = $query;
       self::$endpoint = $endpoint;
 
@@ -173,6 +192,165 @@
     public static function get_ab_checkouts () {
 
       return ( isset( self::$data->checkouts ) ? self::$data->checkouts : null );
+
+    }
+
+    /*
+    * Function: get_inventory
+    * Description: Gets inventory of variants
+    * Params:
+    *   - $all - If true will track all inventory variants...defaults to false
+    *   - $track - If true will track quantity of lower than $track_level
+    *   - $track_level - Inventory quantity when to confirm its low
+    * Return: If track is false - Inventory Quantity - [product_id] => quantity or [product_id] => [ variant_id => 3, ... ] or if true then static
+    */
+    public static function get_inventory ( $all = false, $track = false, $track_level = 10 ) {
+
+      $type = self::$data;
+
+      self::$track = $track;
+      self::$track_level = $track_level;
+
+      if( isset($type->products) ) {
+
+        self::$inventory = [];
+
+        foreach($type->products as $product) {
+
+          if($all) {
+
+            foreach($product->variants as $vIdx => $variant) {
+
+              if( count($product->variants) > 1 ) {
+
+                self::$inventory[$product->id][$variant->id] = $variant->inventory_quantity;
+
+              } else {
+
+                self::$inventory[$product->id] = $product->variants[0]->inventory_quantity;
+
+              }
+
+            }
+
+          } else {
+
+            self::$inventory[$product->id] = $product->variants[0]->inventory_quantity;
+
+          }
+
+        }
+
+      } elseif ( isset($type->product) ) {
+
+        $product = $type->product;
+
+        if($all) {
+
+          foreach($product->variants as $vIdx => $variant) {
+
+            if( count($product->variants) > 1 ) {
+
+              self::$inventory[$product->id][$variant->id] = $variant->inventory_quantity;
+
+            } else {
+
+              self::$inventory[$product->id] = $product->variants[0]->inventory_quantity;
+
+            }
+
+          }
+
+        } else {
+
+          self::$inventory[$product->id] = $product->variants[0]->inventory_quantity;
+
+        }
+
+      } elseif ( isset($type->variants) ) {
+
+        $variants = $type->variants;
+
+        if($all) {
+
+          foreach($variants as $vIdx => $variant) {
+
+            self::$inventory[$variant->id] = $variant->inventory_quantity;
+
+          }
+
+        } else {
+
+          self::$inventory[$variant->id] = $variants[0]->inventory_quantity;
+
+        }
+
+      } elseif ( isset($type->variant) ) {
+
+        self::$inventory[$type->variant->id] = $variant->inventory_quantity;
+
+      }
+
+      return ( $track ? new static() : self::$inventory );
+
+    }
+
+    /*
+    * Function: stock_level
+    * Description: Can only be used if get_inventory param $track is true
+    * Return: array if low returns low or higher returns normal based off $track_level
+    */
+    public static function stock_level () {
+
+      $return = [];
+
+      if( self::$track ) {
+
+        foreach(self::$inventory as $iIdx => $inventory) {
+
+          if( is_array($inventory) ) {
+
+            foreach($inventory as $qIdx => $quantity) {
+
+              if( $quantity == 0 ) {
+
+                $return[$iIdx][$qIdx] = 'none';
+
+              } elseif( $quantity <= self::$track_level ) {
+
+                $return[$iIdx][$qIdx] = 'low';
+
+              } else {
+
+                $return[$iIdx][$qIdx] = 'normal';
+
+              }
+
+            }
+
+          } else {
+
+            if( $inventory == 0 ) {
+
+              $return[$iIdx] = 'none';
+
+            } elseif( $inventory <= self::$track_level ) {
+
+              $return[$iIdx] = 'low';
+
+            } else {
+
+              $return[$iIdx] = 'normal';
+
+            }
+
+          }
+
+        }
+
+      }
+
+      return $return;
 
     }
 
