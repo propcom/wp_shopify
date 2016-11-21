@@ -252,6 +252,31 @@
 
 			);
 
+			add_settings_section(
+
+				'inventory_settings',
+				'Inventory Settings',
+				[ $this, 'print_section_info' ],
+				'shopify-manager'
+
+			);
+
+			add_settings_field(
+
+				'inventory_level',
+				'Inventory Stock',
+				[ $this, 'add_field' ],
+				'shopify-manager',
+				'inventory_settings',
+				[
+					'name'    => 'inventory_level',
+					'type'    => 'text',
+					'setting' => 'shopify',
+					'note' => 'Applies a track level for a products inventory that classes the product as having low stock'
+				]
+
+			);
+
 			/**
 			 * @desc Checkout Settings
 			 */
@@ -330,9 +355,9 @@
 
 		}
 
-		function print_section_info() {
+		function print_section_info( $section ) {
 
-			print 'Please enter your Shopify settings below:';
+			print 'Please enter your '.$section['title'].' below:';
 
 		}
 

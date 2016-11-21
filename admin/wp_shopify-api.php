@@ -1,15 +1,15 @@
 <?
 
   /*
-  * Class Name: Wordpress_Shopify_Api
-  * Description: Shopify api class for returning json data from shopify api
+  * @classname: Wordpress_Shopify_Api
+  * @description: Shopify api class for returning json data from shopify api
   */
 
   class Wordpress_Shopify_Api {
 
     /*
-    * Var: http_args
-    * Description: WP remote get args
+    * @var: http_args
+    * @description: WP remote get args
     */
     private static $http_args = [
 
@@ -24,61 +24,63 @@
     ];
 
     /*
-    * Var: data
-    * Description: Holder for returned data
+    * @var: data
+    * @description: Holder for returned data
     */
     private static $data = '';
 
     /*
-    * Var: headers
-    * Description: Holder for response headers
+    * @var: headers
+    * @description: Holder for response headers
     */
     private static $headers = [];
 
     /*
-    * Var: endpoint
-    * Description: Holder for current endpoint being used
+    * @var: endpoint
+    * @description: Holder for current endpoint being used
     */
     private static $endpoint = '';
 
     /*
-    * Var: base_url
-    * Description: Holder for base url
+    * @var: base_url
+    * @description: Holder for base url
     */
     private static $base_url = '';
 
     /*
-    * Var: query
-    * Description: Holder for current query
+    * @var: query
+    * @description: Holder for current query
     */
     private static $query = [];
 
     /*
-    * Var: inventory
-    * Description: Holder for inventory quantity
+    * @var: inventory
+    * @description: Holder for inventory quantity
     */
     private static $inventory = [];
 
     /*
-    * Var: track
-    * Description: Track low stock on inventory quantity
+    * @var: track
+    * @description: Track low stock on inventory quantity
     */
     private static $track = false;
 
     /*
-    * Var: track_level
-    * Description: Track stock level on inventory quantity
+    * @var: track_level
+    * @description: Track stock level on inventory quantity
     */
     private static $track_level = 0;
 
     /*
-    * Function: forge
-    * Description: Call api to store response
-    * Return: New Instance
+    * @function: forge
+    * @description: Call api to store response
+    * @return: New Instance
     */
     public static function forge ( $endpoint, $query = [], $exc_handler = true ) {
 
       self::$inventory = [];
+      self::$track_level = ( get_option('prop_shopify')['inventory_level'] ? get_option('prop_shopify')['inventory_level'] : 0 );
+
       self::$query = $query;
       self::$endpoint = $endpoint;
 
@@ -119,9 +121,9 @@
     }
 
     /*
-    * Function: get_products
-    * Description: Gets all products from shop
-    * Return: Products
+    * @function: get_products
+    * @description: Gets all products from shop
+    * @return: Products
     */
     public static function get_products () {
 
@@ -130,9 +132,9 @@
     }
 
     /*
-    * Function: get_product
-    * Description: Gets single product from shop
-    * Return: Product
+    * @function: get_product
+    * @description: Gets single product from shop
+    * @return: Product
     */
     public static function get_product () {
 
@@ -141,9 +143,9 @@
     }
 
     /*
-    * Function: get_variant
-    * Description: Gets single variant from shop
-    * Return: Variant
+    * @function: get_variant
+    * @description: Gets single variant from shop
+    * @return: Variant
     */
     public static function get_variant () {
 
@@ -152,9 +154,9 @@
     }
 
     /*
-    * Function: get_collections
-    * Description: Gets all collections from shop
-    * Return: Collections
+    * @function: get_collections
+    * @description: Gets all collections from shop
+    * @return: Collections
     */
     public static function get_collections () {
 
@@ -163,9 +165,9 @@
     }
 
     /*
-    * Function: get_collection
-    * Description: Gets single collections from shop
-    * Return: Collection
+    * @function: get_collection
+    * @description: Gets single collections from shop
+    * @return: Collection
     */
     public static function get_collection () {
 
@@ -174,9 +176,9 @@
     }
 
     /*
-    * Function: get_orders
-    * Description: Gets orders for single customer from shop
-    * Return: Orders
+    * @function: get_orders
+    * @description: Gets orders for single customer from shop
+    * @return: Orders
     */
     public static function get_orders () {
 
@@ -185,9 +187,9 @@
     }
 
     /*
-    * Function: get_ab_checkouts
-    * Description: Gets list of abandoned checkouts
-    * Return: Abandoned Checkouts
+    * @function: get_ab_checkouts
+    * @description: Gets list of abandoned checkouts
+    * @return: Abandoned Checkouts
     */
     public static function get_ab_checkouts () {
 
@@ -196,20 +198,19 @@
     }
 
     /*
-    * Function: get_inventory
-    * Description: Gets inventory of variants
-    * Params:
+    * @function: get_inventory
+    * @description: Gets inventory of variants
+    * @params:
     *   - $all - If true will track all inventory variants...defaults to false
     *   - $track - If true will track quantity of lower than $track_level
     *   - $track_level - Inventory quantity when to confirm its low
-    * Return: If track is false - Inventory Quantity - [product_id] => quantity or [product_id] => [ variant_id => 3, ... ] or if true then static
+    * @return: If track is false - Inventory Quantity - [product_id] => quantity or [product_id] => [ variant_id => 3, ... ] or if true then static
     */
-    public static function get_inventory ( $all = false, $track = false, $track_level = 10 ) {
+    public static function get_inventory ( $all = false, $track = false ) {
 
       $type = self::$data;
 
       self::$track = $track;
-      self::$track_level = $track_level;
 
       if( isset($type->products) ) {
 
@@ -296,9 +297,9 @@
     }
 
     /*
-    * Function: stock_level
-    * Description: Can only be used if get_inventory param $track is true
-    * Return: array if low returns low or higher returns normal based off $track_level
+    * @function: stock_level
+    * @description: Can only be used if get_inventory param $track is true
+    * @return: array if low returns low or higher returns normal based off $track_level
     */
     public static function stock_level () {
 
@@ -355,9 +356,9 @@
     }
 
     /*
-    * Function: api_limit_close
-    * Description: Checks if api limit is close to exceeding
-    * Return: True/False
+    * @function: api_limit_close
+    * @description: Checks if api limit is close to exceeding
+    * @return: True/False
     */
     public static function api_limit_close () {
 
@@ -381,9 +382,13 @@
     }
 
     /*
-    * Function: send_get_request
-    * Description: Wrapper for wp_remote_get
-    * Return: Response or null on failure
+    * @function: send_get_request
+    * @description: Wrapper for wp_remote_get
+    * @params:
+    *   - $url The url of the resource you need to access
+    *   - $args Array of headers to send with request
+    *   - $excep Weather to throw exception on error or not
+    * @return: Response or null on failure
     */
     private static function send_get_request ( $url, $args, $excep = false ) {
 
@@ -419,9 +424,9 @@
     }
 
     /*
-    * Function: build_base_url
-    * Description: Builds base url for api calls
-    * Return: Base url
+    * @function: build_base_url
+    * @description: Builds base url for api calls
+    * @return: Base url
     */
     public static function build_base_url () {
 
@@ -445,9 +450,9 @@
     }
 
     /*
-    * Function: is_options_valid
-    * Description: Checks that wp options are valid and set
-    * Return: True or False
+    * @function: is_options_valid
+    * @description: Checks that wp options are valid and set
+    * @return: True or False
     */
     private static function is_options_valid () {
 
@@ -462,9 +467,9 @@
     }
 
     /*
-    * Function: get_data
-    * Description: Gets data returned from api
-    * Return: Data
+    * @function: get_data
+    * @description: Gets data returned from api
+    * @return: Data
     */
     public static function get_data () {
 
@@ -473,9 +478,9 @@
     }
 
     /*
-    * Function: get_url
-    * Description: Gets the entire request url
-    * Return: Url
+    * @function: get_url
+    * @description: Gets the entire request url
+    * @return: Url
     */
     public static function get_url () {
 
