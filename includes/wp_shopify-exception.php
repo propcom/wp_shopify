@@ -19,34 +19,6 @@
 
     }
 
-    public function scriptAlert () {
-
-      $script = [
-
-        '<script>',
-        'alert(Error code: {$this->code} : {$this->message});',
-        '</script>'
-
-      ];
-
-      return join(' ', $script);
-
-    }
-
-    public function consoleLog () {
-
-      $script = [
-
-        '<script>',
-        'console.error(Error code: {$this->code} : {$this->message});',
-        '</script>'
-
-      ];
-
-      return join(' ', $script);
-
-    }
-
   }
 
 ?>
