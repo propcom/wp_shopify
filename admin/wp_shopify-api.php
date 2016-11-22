@@ -1,7 +1,7 @@
 <?
 
   /*
-  * @classname: Wordpress_Shopify_Api
+  * @class: Wordpress_Shopify_Api
   * @description: Shopify api class for returning json data from shopify api
   */
 
