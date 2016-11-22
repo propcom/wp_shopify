@@ -34,7 +34,7 @@
 
 <h3>Shopify - Inventory Settings</h3>
 <p>
-  Inventory allows the user to track there products inventory, the below setting will track what is considered "low stock" based on below value.<br>
+  Inventory allows the user to track there products inventory, the below setting will track what is considered "low stock" based on below value.<br><br>
   So for example, if the below setting is set to 10 then a product that has its inventory quantity below that, will be considered low stock and can be rendered on FE as low stock.
   <ul>
     <li>Inventory Stock - Allows you to track your low stock with this value</li>
