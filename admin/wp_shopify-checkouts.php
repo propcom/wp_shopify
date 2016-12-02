@@ -167,4 +167,8 @@
 
   </table>
 
+<? else: ?>
+
+  <p>No checkouts available.</p>
+
 <? endif; ?>
