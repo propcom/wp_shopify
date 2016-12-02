@@ -407,11 +407,11 @@
 
           if($excep) {
 
-            throw new Wordpress_Shopify_Api_Exception( 'API Error: '.implode($encode->errors) );
+            throw new Wordpress_Shopify_Api_Exception( 'API Error: '.$encode->errors );
 
           } else {
 
-            return 'API Error: '.implode($encode->errors);
+            return 'API Error: '.$encode->errors;
 
           }
 
