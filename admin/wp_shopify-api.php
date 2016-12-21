@@ -198,6 +198,29 @@
     }
 
     /*
+    * @function: get_customer
+    * @description: Gets single customer profile, based on endpoint
+    * @return: Customer
+    */
+    public static function get_customer () {
+
+      $customer = null;
+
+      if( isset( self::$data->customers ) ) {
+
+        $customer = self::$data->customers[0];
+
+      } elseif ( isset( self::$data->customer ) ) {
+
+        $customer = self::$data->customer;
+
+      }
+
+      return $customer;
+
+    }
+
+    /*
     * @function: get_inventory
     * @description: Gets inventory of variants
     * @params:
