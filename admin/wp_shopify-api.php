@@ -356,6 +356,61 @@
     }
 
     /*
+    * @function: search_products
+    * @description: Searches products based off - Title, tags, vendor and type
+    * @return: Products
+    */
+    public static function search_products ( $search_term ) {
+
+      $query = [];
+      $products = self::get_products();
+      $s_query = explode(' ', strtolower($search_term));
+
+      if( !empty($products) ) {
+
+        foreach($products as $product) {
+
+          // Titles
+          $words = explode(' ', strtolower($product->title));
+          foreach($s_query as $s) {
+
+            if( in_array($s, $words) && !isset($query[$product->id]) ) $query[$product->id] = $product;
+
+          }
+
+          // Tags
+          $tags = explode(',', strtolower($product->tags));
+          foreach($s_query as $s) {
+
+            if( in_array($s, $tags) && !isset($query[$product->id]) ) $query[$product->id] = $product;
+
+          }
+
+          // Vendor
+          $vendor = explode(',', strtolower($product->vendor));
+          foreach($s_query as $s) {
+
+            if( in_array($s, $vendor) && !isset($query[$product->id]) ) $query[$product->id] = $product;
+
+          }
+
+          // Type
+          $type = explode(',', strtolower($product->product_type));
+          foreach($s_query as $s) {
+
+            if( in_array($s, $type) && !isset($query[$product->id]) ) $query[$product->id] = $product;
+
+          }
+
+        }
+
+      }
+
+      return $query;
+
+    }
+
+    /*
     * @function: api_limit_close
     * @description: Checks if api limit is close to exceeding
     * @return: True/False
