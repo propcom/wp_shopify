@@ -311,7 +311,7 @@
 
       } elseif ( isset($type->variant) ) {
 
-        self::$inventory[$type->variant->id] = $variant->inventory_quantity;
+        self::$inventory[$type->variant->id] = $type->variant->inventory_quantity;
 
       }
 
