@@ -87,6 +87,8 @@
 
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wp_shopify-rest.php';
 
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-multipass.php';
+
 		}
 
 		/**
