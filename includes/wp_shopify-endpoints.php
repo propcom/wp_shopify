@@ -23,4 +23,6 @@
 
   define( 'ENDPOINT_COLLECTIONS', '/admin/custom_collections.json' );
 
+  define( 'ENDPOINT_MULTIPASS', '/account/login/multipass/' );
+
 ?>

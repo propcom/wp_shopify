@@ -221,6 +221,26 @@
     }
 
     /*
+    * @function: get_multipass_token
+    * @description: Generates access token for multipass
+    * @return: Token
+    */
+    public static function get_multipass_token ( $secret, $params ) {
+
+      if( isset($params['email']) ) {
+
+        $multipass = new ShopifyMultipass( $secret );
+        $token = $multipass->generate_token( $params );
+
+        return $token;
+
+      }
+
+      return null;
+
+    }
+
+    /*
     * @function: get_inventory
     * @description: Gets inventory of variants
     * @params:
