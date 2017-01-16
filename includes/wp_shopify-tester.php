@@ -21,6 +21,10 @@
 
           );
 
+        } else {
+
+          throw new Exception('Cannot connect to your shop.');
+
         }
 
       } catch (Wordpress_Shopify_Api_Exception $exception) {
