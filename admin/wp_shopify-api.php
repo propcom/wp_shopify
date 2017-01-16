@@ -77,13 +77,15 @@
     * @description: Call api to store response
     * @return: New Instance
     */
-    public static function forge ( $endpoint, $query = [], $exc_handler = true ) {
+    public static function forge ( $endpoint, $query = [], $exc_handler = true, $type = 'GET', $args = [] ) {
 
       self::$inventory = [];
       self::$track_level = ( get_option('prop_shopify')['inventory_level'] ? get_option('prop_shopify')['inventory_level'] : 0 );
 
       self::$query = $query;
       self::$endpoint = $endpoint;
+
+      self::$http_args = array_merge( self::$http_args, $args );
 
       if( !empty($query) ) {
 
@@ -101,7 +103,7 @@
 
           try {
 
-            self::$data = self::send_get_request( self::$base_url, self::$http_args, true );
+            self::$data = ( $type == 'GET' ? self::send_get_request( self::$base_url, self::$http_args, true ) : self::send_post_request( self::$base_url, self::$http_args, true ) );
 
           } catch (Wordpress_Shopify_Api_Exception $exception) {
 
@@ -111,7 +113,7 @@
 
         } else {
 
-          self::$data = self::send_get_request( self::$base_url, self::$http_args );
+          self::$data = ( $type == 'GET' ? self::send_get_request( self::$base_url, self::$http_args ) : self::send_post_request( self::$base_url, self::$http_args ) );
 
         }
 
@@ -492,6 +494,48 @@
     private static function send_get_request ( $url, $args, $excep = false ) {
 
       $response = wp_remote_get( $url, $args );
+
+      if( is_array( $response ) ) {
+
+        self::$headers = $response['headers'];
+        $encode = json_decode($response['body']);
+
+        if( !isset( $encode->errors ) ) {
+
+          return $encode;
+
+        } else {
+
+          if($excep) {
+
+            throw new Wordpress_Shopify_Api_Exception( 'API Error: '.$encode->errors );
+
+          } else {
+
+            return 'API Error: '.$encode->errors;
+
+          }
+
+        }
+
+      }
+
+      return null;
+
+    }
+
+    /*
+    * @function: send_post_request
+    * @description: Wrapper for wp_remote_post
+    * @params:
+    *   - $url The url of the resource you need to access
+    *   - $args Array of headers to send with request
+    *   - $excep Weather to throw exception on error or not
+    * @return: Response or null on failure
+    */
+    private static function send_post_request ( $url, $args, $excep = false ) {
+
+      $response = wp_remote_post( $url, $args );
 
       if( is_array( $response ) ) {
 
