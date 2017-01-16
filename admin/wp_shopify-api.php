@@ -14,6 +14,7 @@
     private static $http_args = [
 
       'timeout' => 30,
+      'redirection' => 3,
       'headers' => [
 
         'Content-Type' => 'application/json'
@@ -518,6 +519,17 @@
       }
 
       return null;
+
+    }
+
+    /*
+    * @function: get_request_headers
+    * @description: Current request headers in response
+    * @return: Headers
+    */
+    public static function get_request_headers () {
+
+      return self::$headers;
 
     }
 
