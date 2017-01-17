@@ -79,8 +79,6 @@
 
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-tester.php';
 
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-shortcodes.php';
-
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-email.php';
 
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wp_shopify-options.php';
@@ -88,6 +86,57 @@
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wp_shopify-rest.php';
 
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-multipass.php';
+
+		}
+
+		/**
+		 * Register the media product button
+		 *
+		 * @since    1.0.0
+		 */
+		public function add_product_button () {
+
+			add_thickbox();
+
+			$shopify_collections = Wordpress_Shopify_Api::forge( ENDPOINT_COLLECTIONS )->get_collections();
+
+			ob_start();
+			?>
+				<div id="wp-shopify-modal" style="display: none;">
+					<div class="wp-shopify-modal">
+
+						<? if( !empty($shopify_collections) ): ?>
+
+							<? foreach($shopify_collections as $collection): ?>
+								<div class="wsm-collection">
+
+									<a class="js-load-products" href="javascript:void(0);" data-id="<?= $collection->id ?>">
+
+										<div class="image"><img src="<?= ($collection->image->src ? $collection->image->src : plugins_url( 'images/blank.png', __FILE__ ) ) ?>" alt="<?= $collection->title ?>"></div>
+										<div class="title">
+											<h3><?= $collection->title ?></h3>
+											<p>Created At: <?= date_i18n( 'M j, h:m a T', strtotime($collection->created_at) ) ?></p>
+										</div>
+
+									</a>
+
+								</div>
+							<? endforeach; ?>
+
+						<? else: ?>
+							<p>No collections available. Collections are needed on your shop so as to add products.</p>
+						<? endif; ?>
+
+					</div>
+				</div>
+				<script type="text/javascript">
+					window.endpoint = '<?= get_home_url().'/wp-json/shopify/v1/products/' ?>';
+				</script>
+			<?
+
+			echo ob_get_clean();
+
+			echo '<a href="#TB_inline?width=900&height=800&inlineId=wp-shopify-modal" id="insert-shopify-product" class="thickbox button" name="Shopify Products - Choose a product">Add Product</a>';
 
 		}
 

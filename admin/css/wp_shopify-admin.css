@@ -19,9 +19,73 @@
 }
 
 .spinsym {
-  margin-left: 5px;
-  display: inline-block;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: block;
   width: 20px;
   height: 20px;
 	background: url('../images/spinner.gif');
+}
+
+/* Shopify Modal */
+.wp-shopify-modal {
+  display: block;
+  max-width: 95%;
+}
+
+.wp-shopify-modal .wsm-collection {
+  position: relative;
+  padding: 10px;
+  display: table;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+}
+
+.wp-shopify-modal .wsm-collection a {
+  display: block;
+  text-decoration: none;
+}
+
+.wp-shopify-modal .wsm-collection .image {
+  display: table-cell;
+  width: 25%;
+}
+
+.wp-shopify-modal .wsm-collection .image img {
+  width: 100%;
+}
+
+.wp-shopify-modal .wsm-collection .title {
+  display: table-cell;
+  width: 75%;
+  vertical-align: middle;
+}
+
+.wp-shopify-modal .wsm-collection .title p,
+.wp-shopify-modal .wsm-collection .title h3 {
+  margin: 3px 0px;
+  padding-left: 10px !important;
+}
+
+.wp-shopify-modal .wsm-collection .title p {
+  color: #5f5f5f;
+}
+
+.wp-shopify-modal .wsm-collection .wsm-products a {
+  padding: 10px;
+  display: block;
+  width: 100%;
+}
+
+.wp-shopify-modal .wsm-collection .wsm-products a span {
+  padding: 3px;
+  display: inline-block;
+  color: #eee;
+  background-color: #000;
+}
+
+.wp-shopify-modal .wsm-collection .wsm-products a:hover {
+  color: #fff;
+  background-color: #3480a5;
 }

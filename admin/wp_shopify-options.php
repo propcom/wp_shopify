@@ -87,17 +87,6 @@
 
 			);
 
-			add_submenu_page(
-
-				'shopify-manager',
-				'Shopify Shortcodes',
-				'Shortcodes',
-				'administrator',
-				'product-shortcodes',
-				[ $this, 'render_ss_page' ]
-
-			);
-
 		}
 
 		function render_page() {
@@ -140,25 +129,6 @@
 
 		}
 
-		function render_ss_page() {
-
-			$this->options = get_option( 'prop_shopify_shortcodes' ); ?>
-
-			<div class="wrap">
-				<h1>Shopify Shortcodes</h1>
-				<form method="post" action="options.php">
-					<?
-						settings_fields( 'propeller_shopify_shortcodes' );
-						do_settings_sections( 'shopify-shortcodes' );
-						require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wp_shopify-shortcodes.php';
-					?>
-				</form>
-			</div>
-
-			<?
-
-		}
-
 		function section_text() {
 
 			print 'Enter your site settings below:';
@@ -178,13 +148,6 @@
 
 				'propeller_shopify_checkout',
 				'prop_shopify_checkout'
-
-			);
-
-			register_setting(
-
-				'propeller_shopify_shortcodes',
-				'prop_shopify_shortcodes'
 
 			);
 
@@ -290,19 +253,6 @@
 
 			);
 
-			/**
-			 * @desc Shortcode Settings
-			 */
-
-			add_settings_section(
-
-				'shopify_shortcode_settings',
-				'Collection/Product Shortcodes',
-				[ $this, 'print_section_shortcode_info' ],
-				'shopify-shortcodes'
-
-			);
-
 		}
 
 		function add_field( array $args ) {
@@ -364,16 +314,6 @@
 		function print_section_checkout_info() {
 
 			print 'See your abandoned checkouts below:';
-
-		}
-
-		function print_section_shortcode_info() {
-
-			print (
-
-				'<p class="description">You can generate your shortcodes below.</p>'
-
-			);
 
 		}
 

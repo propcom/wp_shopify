@@ -151,6 +151,7 @@
 
 			$plugin_admin = new Wordpress_Shopify_Admin( $this->get_Wordpress_Shopify(), $this->get_version() );
 
+			$this->loader->add_action( 'media_buttons', $plugin_admin, 'add_product_button' );
 			$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 			$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 

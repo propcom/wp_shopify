@@ -5,7 +5,7 @@
 
 		 var self = this;
 
-		 self.parent = $('.shortcodes');
+		 self.parent = $('.wp-shopify-modal');
 
 		 self.ajaxIt = function (uri, params, ctx, populate) {
 
@@ -31,15 +31,18 @@
 
 					 if(jq.data && jq.data.length > 0) {
 
-						 var html = [ '<option value="">Select Product</option>' ];
+						 var html = [ '<ul class="wsm-products">' ];
 
  						 for(var product in jq.data) {
 
- 							 html.push('<option value="' + jq.data[product].id + '">' + jq.data[product].title + '</option>');
+ 							 html.push('<li><a href="javascript:void(0);" data-id="' + jq.data[product].id + '">' + jq.data[product].title + ' - <span>Price: ' + jq.data[product].variants[0].price + '</span></a></li>');
 
  						 }
 
- 						 populate.find('select').html(html.join(''));
+ 						 populate.append(html.join(''));
+
+						 html.push('</ul>');
+
  						 if( ctx.find('.spinsym').length > 0 ) ctx.find('.spinsym').remove();
 
 					 }
@@ -65,81 +68,32 @@
 
 		 };
 
-		 self.onCollection = function () {
+		 self.loadProducts = function () {
 
-			 var value = $(this).val();
-			 var parent = $(this).parents('.collection');
-			 var populate = self.parent.find('.products');
-			 var shortcode = self.parent.find('.js-shortcode-text');
+			 var value = $(this).data('id');
+			 var populate = $(this).parents('.wsm-collection');
 
-			 if(shortcode.length > 0) {
+			 if( !$(this).hasClass('active') ) {
 
-				 shortcode.val( '[products id="' + value + '"]' );
+				 $(this).addClass('active');
+				 self.ajaxIt( window.endpoint, { id: value }, populate, populate );
 
-			 }
+			 } else {
 
-			 if(window.endpoint) {
-
-				 var params = { id: value };
-				 var callback = function () {};
-
-				 self.ajaxIt( window.endpoint, params, parent, populate );
+				 $(this).removeClass('active');
+				 populate.find('.wsm-products').remove();
 
 			 }
 
 		 };
 
-		 self.onProduct = function () {
+		 self.onChosenProduct = function () {
 
-			 var value = $(this).val();
-			 var shortcode = self.parent.find('.js-shortcode-text');
+			 var id = $(this).data('id');
 
-			 if(shortcode.length > 0) {
+			 if(wp.media.editor) {
 
-				 shortcode.val( '[product id="' + value + '"]' );
-
-			 }
-
-		 };
-
-		 self.doCopy = function () {
-
-			 var shortcode = self.parent.find('.js-shortcode-text');
-
-			 if(shortcode.length > 0) {
-
-				 shortcode.focus();
-				 shortcode.select();
-
-				 var support = document.execCommand('copy');
-
-				 if(support) {
-
-					 self.addNotice('Coppied');
-
-				 } else {
-
-					 alert('Cannot copy, please copy manually Ctrl + c');
-
-				 }
-
-			 }
-
-		 };
-
-		 self.addNotice = function (text) {
-
-			 var html = [];
-
-			 if(self.parent.length > 0) {
-
-				 html.push('<div class="notice notice-success is-dismissible"><p>' + text + '</p></div>');
-
-				 if(self.parent.next('.notice').length <= 0) {
-
-					 self.parent.after(html.join(''));
-
-				 }
+				 wp.media.editor.insert('[product id="' + id + '"]');
 
 			 }
 
@@ -147,9 +101,8 @@
 
 		 self.init = function () {
 
-			 self.parent.find('.js-copy-shortcode').on('click', self.doCopy);
-			 self.parent.find('.js-product-select').on('change', self.onProduct);
-			 self.parent.find('.js-collection-select').on('change', self.onCollection);
+			 self.parent.find('.wsm-collection a').on('click', self.loadProducts);
+			 $(document).on('click', '.wsm-products a', self.onChosenProduct);
 
 		 };
 
