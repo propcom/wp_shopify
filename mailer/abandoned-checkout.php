@@ -15,7 +15,7 @@
       <? if($content): ?>
         <tr>
           <td align="center">
-            <img width="500" height="auto" src="<?= $logo ?>" alt="ShopCurve" />
+            <img width="500" height="auto" src="<?= $logo ?>" alt="Site Logo" />
           </td>
         </tr>
         <tr>
