@@ -11,7 +11,7 @@
     * @var: http_args
     * @description: WP remote get args
     */
-    private static $http_args = [
+    private $http_args = [
 
       'timeout' => 30,
       'redirection' => 3,
@@ -28,98 +28,103 @@
     * @var: data
     * @description: Holder for returned data
     */
-    private static $data = '';
+    private $data = '';
 
     /*
     * @var: headers
     * @description: Holder for response headers
     */
-    private static $headers = [];
+    private $headers = [];
 
     /*
     * @var: endpoint
     * @description: Holder for current endpoint being used
     */
-    private static $endpoint = '';
+    private $endpoint = '';
 
     /*
     * @var: base_url
     * @description: Holder for base url
     */
-    private static $base_url = '';
+    private $base_url = '';
 
     /*
     * @var: query
     * @description: Holder for current query
     */
-    private static $query = [];
+    private $query = [];
 
     /*
     * @var: inventory
     * @description: Holder for inventory quantity
     */
-    private static $inventory = [];
+    private $inventory = [];
 
     /*
     * @var: track
     * @description: Track low stock on inventory quantity
     */
-    private static $track = false;
+    private $track = false;
 
     /*
     * @var: track_level
     * @description: Track stock level on inventory quantity
     */
-    private static $track_level = 0;
+    private $track_level = 0;
 
     /*
-    * @function: forge
-    * @description: Call api to store response
-    * @return: New Instance
+    * @function __construct
     */
-    public static function forge ( $endpoint, $query = [], $exc_handler = true, $type = 'GET', $args = [] ) {
+    protected function __construct ( $endpoint, $query, $exc_handler, $type, $args ) {
 
-      self::$inventory = [];
-      self::$track_level = ( get_option('prop_shopify')['inventory_level'] ? get_option('prop_shopify')['inventory_level'] : 0 );
+      $this->init( $endpoint, $query, $exc_handler, $type, $args );
 
-      self::$query = $query;
-      self::$endpoint = $endpoint;
+    }
 
-      self::$http_args = array_merge( self::$http_args, $args );
+    /*
+    * @function init
+    */
+    protected function init ( $endpoint, $query, $exc_handler, $type, $args ) {
+
+      $this->inventory = [];
+      $this->track_level = ( get_option('prop_shopify')['inventory_level'] ? get_option('prop_shopify')['inventory_level'] : 0 );
+
+      $this->query = $query;
+      $this->endpoint = $endpoint;
+
+      $this->http_args = array_merge( $this->http_args, $args );
 
       if( !empty($query) ) {
 
-        self::$base_url = self::build_base_url().$endpoint.'?'.urldecode(http_build_query($query));
+        $this->base_url = $this->build_base_url().$endpoint.'?'.urldecode(http_build_query($query));
 
       } else {
 
-        self::$base_url = self::build_base_url().$endpoint;
+        $this->base_url = $this->build_base_url().$endpoint;
 
       }
 
-      if( self::is_options_valid() ) {
+      if( $this->is_options_valid() ) {
 
         if( $exc_handler ) {
 
           try {
 
-            self::$data = ( $type == 'GET' ? self::send_get_request( self::$base_url, self::$http_args, true ) : self::send_post_request( self::$base_url, self::$http_args, true ) );
+            $this->data = ( $type == 'GET' ? $this->send_get_request( $this->base_url, $this->http_args, true ) : $this->send_post_request( $this->base_url, $this->http_args, true ) );
 
           } catch (Wordpress_Shopify_Api_Exception $exception) {
 
-            self::$data = $exception->getMessage();
+            $this->data = $exception->getMessage();
 
           }
 
         } else {
 
-          self::$data = ( $type == 'GET' ? self::send_get_request( self::$base_url, self::$http_args ) : self::send_post_request( self::$base_url, self::$http_args ) );
+          $this->data = ( $type == 'GET' ? $this->send_get_request( $this->base_url, $this->http_args ) : $this->send_post_request( $this->base_url, $this->http_args ) );
 
         }
 
       }
-
-      return new static();
 
     }
 
@@ -128,9 +133,9 @@
     * @description: Gets all products from shop
     * @return: Products
     */
-    public static function get_products () {
+    public function get_products () {
 
-      return ( isset( self::$data->products ) ? self::$data->products : null );
+      return ( isset( $this->data->products ) ? $this->data->products : null );
 
     }
 
@@ -139,9 +144,9 @@
     * @description: Gets single product from shop
     * @return: Product
     */
-    public static function get_product () {
+    public function get_product () {
 
-      return ( isset( self::$data->product ) ? self::$data->product : null );
+      return ( isset( $this->data->product ) ? $this->data->product : null );
 
     }
 
@@ -150,9 +155,9 @@
     * @description: Gets single variant from shop
     * @return: Variant
     */
-    public static function get_variant () {
+    public function get_variant () {
 
-      return ( isset( self::$data->variant ) ? self::$data->variant : null );
+      return ( isset( $this->data->variant ) ? $this->data->variant : null );
 
     }
 
@@ -161,9 +166,9 @@
     * @description: Gets all collections from shop
     * @return: Collections
     */
-    public static function get_collections () {
+    public function get_collections () {
 
-      return ( isset( self::$data->custom_collections ) ? self::$data->custom_collections : null );
+      return ( isset( $this->data->custom_collections ) ? $this->data->custom_collections : null );
 
     }
 
@@ -172,9 +177,9 @@
     * @description: Gets single collections from shop
     * @return: Collection
     */
-    public static function get_collection () {
+    public function get_collection () {
 
-      return ( isset( self::$data->custom_collection ) ? self::$data->custom_collection : null );
+      return ( isset( $this->data->custom_collection ) ? $this->data->custom_collection : null );
 
     }
 
@@ -183,9 +188,9 @@
     * @description: Gets orders for single customer from shop
     * @return: Orders
     */
-    public static function get_orders () {
+    public function get_orders () {
 
-      return ( isset( self::$data->orders ) ? self::$data->orders : null );
+      return ( isset( $this->data->orders ) ? $this->data->orders : null );
 
     }
 
@@ -194,9 +199,9 @@
     * @description: Gets list of abandoned checkouts
     * @return: Abandoned Checkouts
     */
-    public static function get_ab_checkouts () {
+    public function get_ab_checkouts () {
 
-      return ( isset( self::$data->checkouts ) ? self::$data->checkouts : null );
+      return ( isset( $this->data->checkouts ) ? $this->data->checkouts : null );
 
     }
 
@@ -205,17 +210,17 @@
     * @description: Gets single customer profile, based on endpoint
     * @return: Customer
     */
-    public static function get_customer () {
+    public function get_customer () {
 
       $customer = null;
 
-      if( isset( self::$data->customers ) ) {
+      if( isset( $this->data->customers ) ) {
 
-        $customer = self::$data->customers[0];
+        $customer = $this->data->customers[0];
 
-      } elseif ( isset( self::$data->customer ) ) {
+      } elseif ( isset( $this->data->customer ) ) {
 
-        $customer = self::$data->customer;
+        $customer = $this->data->customer;
 
       }
 
@@ -228,7 +233,7 @@
     * @description: Generates access token for multipass
     * @return: Token
     */
-    public static function get_multipass_token ( $secret, $params ) {
+    public function get_multipass_token ( $secret, $params ) {
 
       if( isset($params['email']) ) {
 
@@ -252,15 +257,15 @@
     *   - $track_level - Inventory quantity when to confirm its low
     * @return: If track is false - Inventory Quantity - [product_id] => quantity or [product_id] => [ variant_id => 3, ... ] or if true then static
     */
-    public static function get_inventory ( $all = false, $track = false ) {
+    public function get_inventory ( $all = false, $track = false ) {
 
-      $type = self::$data;
+      $type = $this->data;
 
-      self::$track = $track;
+      $this->track = $track;
 
       if( isset($type->products) ) {
 
-        self::$inventory = [];
+        $this->inventory = [];
 
         foreach($type->products as $product) {
 
@@ -270,11 +275,11 @@
 
               if( count($product->variants) > 1 ) {
 
-                self::$inventory[$product->id][$variant->id] = $variant->inventory_quantity;
+                $this->inventory[$product->id][$variant->id] = $variant->inventory_quantity;
 
               } else {
 
-                self::$inventory[$product->id] = $product->variants[0]->inventory_quantity;
+                $this->inventory[$product->id] = $product->variants[0]->inventory_quantity;
 
               }
 
@@ -282,7 +287,7 @@
 
           } else {
 
-            self::$inventory[$product->id] = $product->variants[0]->inventory_quantity;
+            $this->inventory[$product->id] = $product->variants[0]->inventory_quantity;
 
           }
 
@@ -298,11 +303,11 @@
 
             if( count($product->variants) > 1 ) {
 
-              self::$inventory[$product->id][$variant->id] = $variant->inventory_quantity;
+              $this->inventory[$product->id][$variant->id] = $variant->inventory_quantity;
 
             } else {
 
-              self::$inventory[$product->id] = $product->variants[0]->inventory_quantity;
+              $this->inventory[$product->id] = $product->variants[0]->inventory_quantity;
 
             }
 
@@ -310,7 +315,7 @@
 
         } else {
 
-          self::$inventory[$product->id] = $product->variants[0]->inventory_quantity;
+          $this->inventory[$product->id] = $product->variants[0]->inventory_quantity;
 
         }
 
@@ -322,23 +327,23 @@
 
           foreach($variants as $vIdx => $variant) {
 
-            self::$inventory[$variant->id] = $variant->inventory_quantity;
+            $this->inventory[$variant->id] = $variant->inventory_quantity;
 
           }
 
         } else {
 
-          self::$inventory[$variant->id] = $variants[0]->inventory_quantity;
+          $this->inventory[$variant->id] = $variants[0]->inventory_quantity;
 
         }
 
       } elseif ( isset($type->variant) ) {
 
-        self::$inventory[$type->variant->id] = $type->variant->inventory_quantity;
+        $this->inventory[$type->variant->id] = $type->variant->inventory_quantity;
 
       }
 
-      return ( $track ? new static() : self::$inventory );
+      return ( $track ? $this : $this->inventory );
 
     }
 
@@ -347,13 +352,13 @@
     * @description: Can only be used if get_inventory param $track is true
     * @return: array if low returns low or higher returns normal based off $track_level
     */
-    public static function stock_level () {
+    public function stock_level () {
 
       $return = [];
 
-      if( self::$track ) {
+      if( $this->track ) {
 
-        foreach(self::$inventory as $iIdx => $inventory) {
+        foreach($this->inventory as $iIdx => $inventory) {
 
           if( is_array($inventory) ) {
 
@@ -363,7 +368,7 @@
 
                 $return[$iIdx][$qIdx] = 'none';
 
-              } elseif( $quantity <= self::$track_level ) {
+              } elseif( $quantity <= $this->track_level ) {
 
                 $return[$iIdx][$qIdx] = 'low';
 
@@ -381,7 +386,7 @@
 
               $return[$iIdx] = 'none';
 
-            } elseif( $inventory <= self::$track_level ) {
+            } elseif( $inventory <= $this->track_level ) {
 
               $return[$iIdx] = 'low';
 
@@ -406,10 +411,10 @@
     * @description: Searches products based off - Title, tags, vendor and type
     * @return: Products
     */
-    public static function search_products ( $search_term ) {
+    public function search_products ( $search_term ) {
 
       $query = [];
-      $products = self::get_products();
+      $products = $this->get_products();
       $s_query = explode(' ', strtolower($search_term));
 
       if( !empty($products) ) {
@@ -461,14 +466,14 @@
     * @description: Checks if api limit is close to exceeding
     * @return: True/False
     */
-    public static function api_limit_close () {
+    public function api_limit_close () {
 
       $limit_header = 'http_x_shopify_shop_api_call_limit';
 
-      if( isset( self::$headers[$limit_header] ) ) {
+      if( isset( $this->headers[$limit_header] ) ) {
 
-        $max = intval( explode('/', self::$headers[$limit_header])[1] );
-        $calls = intval( explode('/', self::$headers[$limit_header])[0] );
+        $max = intval( explode('/', $this->headers[$limit_header])[1] );
+        $calls = intval( explode('/', $this->headers[$limit_header])[0] );
 
         if( $calls >= ($max - 1) ) {
 
@@ -491,13 +496,13 @@
     *   - $excep Weather to throw exception on error or not
     * @return: Response or null on failure
     */
-    private static function send_get_request ( $url, $args, $excep = false ) {
+    private function send_get_request ( $url, $args, $excep = false ) {
 
       $response = wp_remote_get( $url, $args );
 
       if( is_array( $response ) ) {
 
-        self::$headers = $response['headers'];
+        $this->headers = $response['headers'];
         $encode = json_decode($response['body']);
 
         if( !isset( $encode->errors ) ) {
@@ -533,13 +538,13 @@
     *   - $excep Weather to throw exception on error or not
     * @return: Response or null on failure
     */
-    private static function send_post_request ( $url, $args, $excep = false ) {
+    private function send_post_request ( $url, $args, $excep = false ) {
 
       $response = wp_remote_post( $url, $args );
 
       if( is_array( $response ) ) {
 
-        self::$headers = $response['headers'];
+        $this->headers = $response['headers'];
         $encode = json_decode($response['body']);
 
         if( !isset( $encode->errors ) ) {
@@ -571,9 +576,9 @@
     * @description: Current request headers in response
     * @return: Headers
     */
-    public static function get_request_headers () {
+    public function get_request_headers () {
 
-      return self::$headers;
+      return $this->headers;
 
     }
 
@@ -582,9 +587,9 @@
     * @description: Builds base url for api calls
     * @return: Base url
     */
-    public static function build_base_url () {
+    public function build_base_url () {
 
-      if( self::is_options_valid() ) {
+      if( $this->is_options_valid() ) {
 
         $base_url = [
 
@@ -608,7 +613,7 @@
     * @description: Checks that wp options are valid and set
     * @return: True or False
     */
-    private static function is_options_valid () {
+    private function is_options_valid () {
 
       if( !get_option ('prop_shopify')['shop'] ) return false;
 
@@ -625,9 +630,9 @@
     * @description: Gets data returned from api
     * @return: Data
     */
-    public static function get_data () {
+    public function get_data () {
 
-      return self::$data;
+      return $this->data;
 
     }
 
@@ -636,9 +641,20 @@
     * @description: Gets the entire request url
     * @return: Url
     */
-    public static function get_url () {
+    public function get_url () {
 
-      return self::$base_url;
+      return $this->base_url;
+
+    }
+
+    /*
+    * @function: forge
+    * @description: Call api to store response
+    * @return: New Instance
+    */
+    public static function forge ( $endpoint, $query = [], $exc_handler = true, $type = 'GET', $args = [] ) {
+
+      return new static( $endpoint, $query, $exc_handler, $type, $args );
 
     }
 
