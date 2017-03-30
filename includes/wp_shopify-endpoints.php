@@ -11,6 +11,8 @@
 
   define( 'ENDPOINT_PRODUCTS', '/admin/products.json' );
 
+  define( 'ENDPOINT_PRODUCT_COUNT', '/admin/products/count.json' );
+
   define( 'ENDPOINT_PRODUCT', '/admin/products' );
 
   define( 'ENDPOINT_VARIANT', '/admin/variants' );
