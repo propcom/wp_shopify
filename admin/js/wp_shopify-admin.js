@@ -39,9 +39,8 @@
 
  						 }
 
- 						 populate.append(html.join(''));
-
 						 html.push('</ul>');
+ 						 populate.append(html.join(''));
 
  						 if( ctx.find('.spinsym').length > 0 ) ctx.find('.spinsym').remove();
 
