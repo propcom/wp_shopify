@@ -122,7 +122,7 @@
 
       if( $shortcode[0] == 'code' ) {
 
-        add_shortcode($shortcode[1], [Shopify_Shortcodes, $method] );
+        add_shortcode($shortcode[1], ['Shopify_Shortcodes', $method] );
 
       }
 

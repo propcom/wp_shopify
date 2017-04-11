@@ -233,7 +233,7 @@
     * @description: Generates access token for multipass
     * @return: Token
     */
-    public function get_multipass_token ( $secret, $params ) {
+    public static function get_multipass_token ( $secret, $params ) {
 
       if( isset($params['email']) ) {
 

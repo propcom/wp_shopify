@@ -114,10 +114,12 @@
 
 									<a class="js-load-products" href="javascript:void(0);" data-id="<?= $collection->id ?>">
 
-										<div class="image"><img src="<?= ($collection->image->src ? $collection->image->src : plugins_url( 'images/blank.png', __FILE__ ) ) ?>" alt="<?= $collection->title ?>"></div>
+										<? if( isset($collection->image) ): ?>
+											<div class="image"><img src="<?= ($collection->image->src ? $collection->image->src : plugins_url( 'images/blank.png', __FILE__ ) ) ?>" alt="<?= $collection->title ?>"></div>
+										<? endif; ?>
 										<div class="title">
 											<h3><?= $collection->title ?></h3>
-											<p>Created At: <?= date_i18n( 'M j, h:m a T', strtotime($collection->created_at) ) ?></p>
+											<? if( isset($collection->created_at) ): ?><p>Created At: <?= date_i18n( 'M j, h:m a T', strtotime($collection->created_at) ) ?></p><? endif; ?>
 										</div>
 
 									</a>

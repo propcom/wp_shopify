@@ -16,7 +16,7 @@
 	 * Plugin Name:       WordPress Shopify Plugin
 	 * Plugin URI:        https://github.com/propcom/wp_shopify
 	 * Description:       Connects wordpress with shopify
-	 * Version:           1.0.0
+	 * Version:           1.1.5
 	 * Author:            Josh Grierson
 	 * Author URI:        https://github.com/propcom
 	 * License:           GPL-2.0+
