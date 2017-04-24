@@ -96,15 +96,15 @@
 
       if( !empty($query) ) {
 
-        $this->base_url = $this->build_base_url().$endpoint.'?'.urldecode(http_build_query($query));
+        $this->base_url = self::build_base_url().$endpoint.'?'.urldecode(http_build_query($query));
 
       } else {
 
-        $this->base_url = $this->build_base_url().$endpoint;
+        $this->base_url = self::build_base_url().$endpoint;
 
       }
 
-      if( $this->is_options_valid() ) {
+      if( self::is_options_valid() ) {
 
         if( $exc_handler ) {
 
@@ -587,9 +587,9 @@
     * @description: Builds base url for api calls
     * @return: Base url
     */
-    public function build_base_url () {
+    public static function build_base_url () {
 
-      if( $this->is_options_valid() ) {
+      if( self::is_options_valid() ) {
 
         $base_url = [
 
@@ -613,7 +613,7 @@
     * @description: Checks that wp options are valid and set
     * @return: True or False
     */
-    private function is_options_valid () {
+    private static function is_options_valid () {
 
       if( !get_option ('prop_shopify')['shop'] ) return false;
 
