@@ -64,29 +64,6 @@
 
       ] );
 
-      register_rest_route( $namespace, '/collection/(?P<c_id>[\d]+)/(?P<p_count>[\d]+)/(?P<p_number>[\d]+)', [
-
-        [
-          'methods' => WP_REST_Server::READABLE,
-          'callback' => [ $this, 'get_products_from' ],
-          'args' => [
-
-            'id' => [
-
-              'validate_callback' => function ( $param, $request, $key ) {
-
-								return is_numeric( $param );
-
-							}
-
-            ]
-
-          ],
-
-        ],
-
-      ] );
-
       register_rest_route( $namespace, '/variants/(?P<id>[\d]+)', [
 
         [
@@ -160,49 +137,6 @@
           'status' => 'success',
           'code' => 200,
           'data' => ( $product ? $product : null ),
-
-        ];
-
-      } else {
-
-        $data = [
-
-          'status' => 'error',
-          'code' => 403,
-          'message' => 'Permission forbidden',
-
-        ];
-
-      }
-
-      return new WP_REST_Response( $data, 200 );
-
-    }
-
-    /**
-     * Gets products from collection
-     */
-    public function get_products_from ( $request ) {
-
-      if( $request ) {
-
-        $collectionId = $request->get_param('c_id');
-        $productsPageNumber = $request->get_param('p_number');
-        $productsPaginateCount = $request->get_param('p_count');
-
-        $products = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCTS,
-          [
-            'collection_id' => $collectionId,
-            'limit' => $productsPaginateCount,
-            'page' => $productsPageNumber
-          ]
-        )->get_products();
-
-        $data = [
-
-          'status' => 'success',
-          'code' => 200,
-          'data' => $products
 
         ];
 
