@@ -134,6 +134,11 @@
  			 */
  			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Product_Array.php';
 
+			 /**
+ 			 * The class responsible for defining Variant class.
+ 			 */
+ 			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Variant.php';
+
 			/**
 			 * The class responsible for defining main api class.
 			 */

@@ -128,7 +128,7 @@
     * @return: Products
     */
     public function products () {
-      return Product_Array::forge($this->data);
+      return ( isset($this->data->products) ? Product_Array::forge($this->data) : null );
     }
 
     /*
@@ -137,16 +137,25 @@
     * @return: Product
     */
     public function product () {
-      return Product::forge($this->data);
+      return ( isset($this->data->product) ? Product::forge($this->data) : null );
     }
 
     /*
-    * @function: get_variant
+    * @function: variants
+    * @description: Gets all variants from shop
+    * @return: Variants
+    */
+    public function variants () {
+      return ( isset( $this->data['data']->variant ) ? $this->data['data']->variant : null );
+    }
+
+    /*
+    * @function: variant
     * @description: Gets single variant from shop
     * @return: Variant
     */
-    public function get_variant () {
-      return ( isset( $this->data['data']->variant ) ? $this->data['data']->variant : null );
+    public function variant () {
+      return ( isset($this->data['data']->variant) ? Variant::forge($this->data) : null );
     }
 
     /*

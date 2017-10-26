@@ -22,7 +22,7 @@
       $this->products = null;
 
       if(!isset($payload['error'])) {
-        $this->products = $payload['data'];
+        $this->products = $payload['data']->products;
       }
 
     }
@@ -43,6 +43,29 @@
       }
 
       return $array;
+    }
+
+    /*
+    * @function filter_products
+    */
+    public function filter_products ($value, $property = 'id') {
+
+      $array = [];
+
+      if(empty($this->products)) {
+        return null;
+      }
+
+      foreach($this->products as $product) {
+        $vars = get_object_vars($product);
+
+        if($vars[$property] == $value) {
+          $array[] = $product;
+        }
+      }
+
+      return $array;
+
     }
 
     /*
