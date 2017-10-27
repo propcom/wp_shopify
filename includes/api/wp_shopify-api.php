@@ -146,7 +146,7 @@
     * @return: Variants
     */
     public function variants () {
-      return ( isset( $this->data['data']->variant ) ? $this->data['data']->variant : null );
+      return ( isset( $this->data['data']->variants ) ? Variant_Array::forge($this->data) : null );
     }
 
     /*
