@@ -21,9 +21,6 @@
 
           );
 
-          $variants = Wordpress_Shopify_Api::forge(ENDPOINT_PRODUCT.'/212161298461/variants.json')->variants();
-          var_dump($variants->filter_variants('50.00', 'price'));
-
         } else {
 
           throw new Wordpress_Shopify_Api_Exception('Cannot connect to your shop.');
