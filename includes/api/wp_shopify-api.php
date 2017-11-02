@@ -123,21 +123,21 @@
     }
 
     /*
-    * @function: products
-    * @description: Gets all products from shop
-    * @return: Products
-    */
-    public function products () {
-      return ( isset($this->data->products) ? Product_Array::forge($this->data) : null );
-    }
-
-    /*
     * @function: product
     * @description: Gets single product from shop
     * @return: Product
     */
     public function product () {
       return ( isset($this->data->product) ? Product::forge($this->data) : null );
+    }
+
+    /*
+    * @function: products
+    * @description: Gets all products from shop
+    * @return: Products
+    */
+    public function products () {
+      return ( isset($this->data->products) ? Product_Array::forge($this->data) : null );
     }
 
     /*
@@ -159,21 +159,21 @@
     }
 
     /*
-    * @function: get_collections
-    * @description: Gets all collections from shop
-    * @return: Collections
-    */
-    public function get_collections () {
-      return ( isset( $this->data['data']->custom_collections ) ? $this->data['data']->custom_collections : null );
-    }
-
-    /*
-    * @function: get_collection
+    * @function: collection
     * @description: Gets single collections from shop
     * @return: Collection
     */
-    public function get_collection () {
-      return ( isset( $this->data['data']->custom_collection ) ? $this->data['data']->custom_collection : null );
+    public function collection () {
+      return ( isset( $this->data['data']->custom_collection ) ? Collection::forge($this->data) : null );
+    }
+
+    /*
+    * @function: collections
+    * @description: Gets all collections from shop
+    * @return: Collections
+    */
+    public function collections () {
+      return ( isset( $this->data['data']->custom_collections ) ? Collection_Array::forge($this->data) : null );
     }
 
     /*
