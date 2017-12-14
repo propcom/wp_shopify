@@ -90,7 +90,7 @@
 
 			add_thickbox();
 
-			$shopify_collections = Wordpress_Shopify_Api::forge( ENDPOINT_COLLECTIONS )->get_collections();
+			$shopify_collections = Wordpress_Shopify_Api::forge( ENDPOINT_COLLECTIONS )->collections();
 
 			ob_start();
 			?>

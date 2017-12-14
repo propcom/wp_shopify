@@ -128,7 +128,7 @@
     * @return: Product
     */
     public function product () {
-      return ( isset($this->data->product) ? Product::forge($this->data) : null );
+      return ( isset($this->data['data']->product) ? Product::forge($this->data) : null );
     }
 
     /*
@@ -137,7 +137,7 @@
     * @return: Products
     */
     public function products () {
-      return ( isset($this->data->products) ? Product_Array::forge($this->data) : null );
+      return ( isset($this->data['data']->products) ? Product_Array::forge($this->data) : null );
     }
 
     /*

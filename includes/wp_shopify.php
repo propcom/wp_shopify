@@ -154,6 +154,11 @@
  			 */
  			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Collection_Array.php';
 
+			 /**
+ 			 * The class responsible for defining Filters class.
+ 			 */
+ 			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Filters.php';
+
 			/**
 			 * The class responsible for defining main api class.
 			 */
@@ -168,6 +173,11 @@
 			 * The class responsible for defining multipass encryption algorithim class.
 			 */
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utils/wp_shopify-multipass.php';
+
+			/**
+			 * The class responsible for defining front facing class.
+			 */
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/wp_shopify-fe-api.php';
 
 			$this->loader = new Wordpress_Shopify_Loader();
 

@@ -52,6 +52,18 @@
     }
 
     /*
+    * @function get_price
+    */
+    public function get_price () {
+
+      if(!isset($this->product->variants) || empty($this->product->variants)) {
+        return null;
+      }
+
+      return $this->product->variants[0]->price;
+    }
+
+    /*
     * @function get_images
     */
     public function get_images () {
