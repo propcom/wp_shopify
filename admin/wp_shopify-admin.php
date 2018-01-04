@@ -69,25 +69,15 @@
 
 		public function load_dependencies() {
 
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-endpoints.php';
-
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-exception.php';
-
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-queue.php';
-
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wp_shopify-api.php';
 
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-tester.php';
 
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-email.php';
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utils/wp_shopify-email.php';
 
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-shortcodes.php';
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utils/wp_shopify-shortcodes.php';
 
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wp_shopify-options.php';
-
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wp_shopify-rest.php';
-
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wp_shopify-multipass.php';
 
 		}
 
@@ -100,7 +90,7 @@
 
 			add_thickbox();
 
-			$shopify_collections = Wordpress_Shopify_Api::forge( ENDPOINT_COLLECTIONS )->get_collections();
+			$shopify_collections = Wordpress_Shopify_Api::forge( ENDPOINT_COLLECTIONS )->collections();
 
 			ob_start();
 			?>

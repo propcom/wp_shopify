@@ -119,6 +119,66 @@
 			 */
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/wp_shopify-public.php';
 
+			/**
+			 * The class responsible for defining all endpoints.
+			 */
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utils/wp_shopify-endpoints.php';
+
+			/**
+			 * The class responsible for defining Product class.
+			 */
+			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Product.php';
+
+			 /**
+ 			 * The class responsible for defining Product_Array class.
+ 			 */
+ 			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Product_Array.php';
+
+			 /**
+ 			 * The class responsible for defining Variant class.
+ 			 */
+ 			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Variant.php';
+
+			 /**
+ 			 * The class responsible for defining Variant_Array class.
+ 			 */
+ 			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Variant_Array.php';
+
+			 /**
+ 			 * The class responsible for defining Collection class.
+ 			 */
+ 			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Collection.php';
+
+			 /**
+ 			 * The class responsible for defining Collection_Array class.
+ 			 */
+ 			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Collection_Array.php';
+
+			 /**
+ 			 * The class responsible for defining Filters class.
+ 			 */
+ 			 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/classes/Filters.php';
+
+			/**
+			 * The class responsible for defining main api class.
+			 */
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/api/wp_shopify-api.php';
+
+			/**
+			 * The class responsible for registering rest api.
+			 */
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/api/wp_shopify-rest.php';
+
+			/**
+			 * The class responsible for defining multipass encryption algorithim class.
+			 */
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utils/wp_shopify-multipass.php';
+
+			/**
+			 * The class responsible for defining front facing class.
+			 */
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/wp_shopify-fe-api.php';
+
 			$this->loader = new Wordpress_Shopify_Loader();
 
 		}

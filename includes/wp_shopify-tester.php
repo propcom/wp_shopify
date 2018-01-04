@@ -11,7 +11,7 @@
 
       try {
 
-        $res = Wordpress_Shopify_Api::forge(ENDPOINT_SHOP, [], false)->get_data();
+        $res = Wordpress_Shopify_Api::forge(ENDPOINT_SHOP, [])->get_data();
 
         if( isset( $res->shop ) ) {
 
@@ -23,7 +23,7 @@
 
         } else {
 
-          throw new Exception('Cannot connect to your shop.');
+          throw new Wordpress_Shopify_Api_Exception('Cannot connect to your shop.');
 
         }
 

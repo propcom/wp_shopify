@@ -28,7 +28,7 @@
     * @var: data
     * @description: Holder for returned data
     */
-    private $data = '';
+    private $data = [];
 
     /*
     * @var: headers
@@ -75,16 +75,14 @@
     /*
     * @function __construct
     */
-    protected function __construct ( $endpoint, $query, $exc_handler, $type, $args ) {
-
-      $this->init( $endpoint, $query, $exc_handler, $type, $args );
-
+    protected function __construct ( $endpoint, $query, $type, $args ) {
+      $this->init( $endpoint, $query, $type, $args );
     }
 
     /*
     * @function init
     */
-    protected function init ( $endpoint, $query, $exc_handler, $type, $args ) {
+    protected function init ( $endpoint, $query, $type, $args ) {
 
       $this->inventory = [];
       $this->track_level = ( get_option('prop_shopify')['inventory_level'] ? get_option('prop_shopify')['inventory_level'] : 0 );
@@ -96,32 +94,28 @@
 
       if( !empty($query) ) {
 
-        $this->base_url = self::build_base_url().$endpoint.'?'.urldecode(http_build_query($query));
+        $this->base_url = $this->build_base_url().$endpoint.'?'.urldecode(http_build_query($query));
 
       } else {
-
-        $this->base_url = self::build_base_url().$endpoint;
-
+        $this->base_url = $this->build_base_url().$endpoint;
       }
 
       if( self::is_options_valid() ) {
 
-        if( $exc_handler ) {
+        try {
 
-          try {
-
-            $this->data = ( $type == 'GET' ? $this->send_get_request( $this->base_url, $this->http_args, true ) : $this->send_post_request( $this->base_url, $this->http_args, true ) );
-
-          } catch (Wordpress_Shopify_Api_Exception $exception) {
-
-            $this->data = $exception->getMessage();
-
+          switch($type) {
+            case 'GET':
+              $this->data['data'] = $this->send_get_request( $this->base_url, $this->http_args );
+              break;
+            case 'POST':
+              $this->data['data'] = $this->send_post_request( $this->base_url, $this->http_args );
+              break;
+            default: break;
           }
 
-        } else {
-
-          $this->data = ( $type == 'GET' ? $this->send_get_request( $this->base_url, $this->http_args ) : $this->send_post_request( $this->base_url, $this->http_args ) );
-
+        } catch (Wordpress_Shopify_Api_Exception $exception) {
+          $this->data['error'] = $exception->getMessage();
         }
 
       }
@@ -129,58 +123,57 @@
     }
 
     /*
-    * @function: get_products
-    * @description: Gets all products from shop
-    * @return: Products
-    */
-    public function get_products () {
-
-      return ( isset( $this->data->products ) ? $this->data->products : null );
-
-    }
-
-    /*
-    * @function: get_product
+    * @function: product
     * @description: Gets single product from shop
     * @return: Product
     */
-    public function get_product () {
-
-      return ( isset( $this->data->product ) ? $this->data->product : null );
-
+    public function product () {
+      return ( isset($this->data['data']->product) ? Product::forge($this->data) : null );
     }
 
     /*
-    * @function: get_variant
+    * @function: products
+    * @description: Gets all products from shop
+    * @return: Products
+    */
+    public function products () {
+      return ( isset($this->data['data']->products) ? Product_Array::forge($this->data) : null );
+    }
+
+    /*
+    * @function: variants
+    * @description: Gets all variants from shop
+    * @return: Variants
+    */
+    public function variants () {
+      return ( isset( $this->data['data']->variants ) ? Variant_Array::forge($this->data) : null );
+    }
+
+    /*
+    * @function: variant
     * @description: Gets single variant from shop
     * @return: Variant
     */
-    public function get_variant () {
-
-      return ( isset( $this->data->variant ) ? $this->data->variant : null );
-
+    public function variant () {
+      return ( isset($this->data['data']->variant) ? Variant::forge($this->data) : null );
     }
 
     /*
-    * @function: get_collections
-    * @description: Gets all collections from shop
-    * @return: Collections
-    */
-    public function get_collections () {
-
-      return ( isset( $this->data->custom_collections ) ? $this->data->custom_collections : null );
-
-    }
-
-    /*
-    * @function: get_collection
+    * @function: collection
     * @description: Gets single collections from shop
     * @return: Collection
     */
-    public function get_collection () {
+    public function collection () {
+      return ( isset( $this->data['data']->custom_collection ) ? Collection::forge($this->data) : null );
+    }
 
-      return ( isset( $this->data->custom_collection ) ? $this->data->custom_collection : null );
-
+    /*
+    * @function: collections
+    * @description: Gets all collections from shop
+    * @return: Collections
+    */
+    public function collections () {
+      return ( isset( $this->data['data']->custom_collections ) ? Collection_Array::forge($this->data) : null );
     }
 
     /*
@@ -189,9 +182,7 @@
     * @return: Orders
     */
     public function get_orders () {
-
-      return ( isset( $this->data->orders ) ? $this->data->orders : null );
-
+      return ( isset( $this->data['data']->orders ) ? $this->data['data']->orders : null );
     }
 
     /*
@@ -200,9 +191,7 @@
     * @return: Abandoned Checkouts
     */
     public function get_ab_checkouts () {
-
-      return ( isset( $this->data->checkouts ) ? $this->data->checkouts : null );
-
+      return ( isset( $this->data['data']->checkouts ) ? $this->data['data']->checkouts : null );
     }
 
     /*
@@ -214,14 +203,10 @@
 
       $customer = null;
 
-      if( isset( $this->data->customers ) ) {
-
-        $customer = $this->data->customers[0];
-
-      } elseif ( isset( $this->data->customer ) ) {
-
-        $customer = $this->data->customer;
-
+      if( isset( $this->data['data']->customers ) ) {
+        $customer = $this->data['data']->customers[0];
+      } elseif ( isset( $this->data['data']->customer ) ) {
+        $customer = $this->data['data']->customer;
       }
 
       return $customer;
@@ -241,168 +226,9 @@
         $token = $multipass->generate_token( $params );
 
         return $token;
-
       }
 
       return null;
-
-    }
-
-    /*
-    * @function: get_inventory
-    * @description: Gets inventory of variants
-    * @params:
-    *   - $all - If true will track all inventory variants...defaults to false
-    *   - $track - If true will track quantity of lower than $track_level
-    *   - $track_level - Inventory quantity when to confirm its low
-    * @return: If track is false - Inventory Quantity - [product_id] => quantity or [product_id] => [ variant_id => 3, ... ] or if true then static
-    */
-    public function get_inventory ( $all = false, $track = false ) {
-
-      $type = $this->data;
-
-      $this->track = $track;
-
-      if( isset($type->products) ) {
-
-        $this->inventory = [];
-
-        foreach($type->products as $product) {
-
-          if($all) {
-
-            foreach($product->variants as $vIdx => $variant) {
-
-              if( count($product->variants) > 1 ) {
-
-                $this->inventory[$product->id][$variant->id] = $variant->inventory_quantity;
-
-              } else {
-
-                $this->inventory[$product->id] = $product->variants[0]->inventory_quantity;
-
-              }
-
-            }
-
-          } else {
-
-            $this->inventory[$product->id] = $product->variants[0]->inventory_quantity;
-
-          }
-
-        }
-
-      } elseif ( isset($type->product) ) {
-
-        $product = $type->product;
-
-        if($all) {
-
-          foreach($product->variants as $vIdx => $variant) {
-
-            if( count($product->variants) > 1 ) {
-
-              $this->inventory[$product->id][$variant->id] = $variant->inventory_quantity;
-
-            } else {
-
-              $this->inventory[$product->id] = $product->variants[0]->inventory_quantity;
-
-            }
-
-          }
-
-        } else {
-
-          $this->inventory[$product->id] = $product->variants[0]->inventory_quantity;
-
-        }
-
-      } elseif ( isset($type->variants) ) {
-
-        $variants = $type->variants;
-
-        if($all) {
-
-          foreach($variants as $vIdx => $variant) {
-
-            $this->inventory[$variant->id] = $variant->inventory_quantity;
-
-          }
-
-        } else {
-
-          $this->inventory[$variant->id] = $variants[0]->inventory_quantity;
-
-        }
-
-      } elseif ( isset($type->variant) ) {
-
-        $this->inventory[$type->variant->id] = $type->variant->inventory_quantity;
-
-      }
-
-      return ( $track ? $this : $this->inventory );
-
-    }
-
-    /*
-    * @function: stock_level
-    * @description: Can only be used if get_inventory param $track is true
-    * @return: array if low returns low or higher returns normal based off $track_level
-    */
-    public function stock_level () {
-
-      $return = [];
-
-      if( $this->track ) {
-
-        foreach($this->inventory as $iIdx => $inventory) {
-
-          if( is_array($inventory) ) {
-
-            foreach($inventory as $qIdx => $quantity) {
-
-              if( $quantity == 0 ) {
-
-                $return[$iIdx][$qIdx] = 'none';
-
-              } elseif( $quantity <= $this->track_level ) {
-
-                $return[$iIdx][$qIdx] = 'low';
-
-              } else {
-
-                $return[$iIdx][$qIdx] = 'normal';
-
-              }
-
-            }
-
-          } else {
-
-            if( $inventory == 0 ) {
-
-              $return[$iIdx] = 'none';
-
-            } elseif( $inventory <= $this->track_level ) {
-
-              $return[$iIdx] = 'low';
-
-            } else {
-
-              $return[$iIdx] = 'normal';
-
-            }
-
-          }
-
-        }
-
-      }
-
-      return $return;
 
     }
 
@@ -496,7 +322,7 @@
     *   - $excep Weather to throw exception on error or not
     * @return: Response or null on failure
     */
-    private function send_get_request ( $url, $args, $excep = false ) {
+    private function send_get_request ( $url, $args ) {
 
       $response = wp_remote_get( $url, $args );
 
@@ -510,17 +336,7 @@
           return $encode;
 
         } else {
-
-          if($excep) {
-
-            throw new Wordpress_Shopify_Api_Exception( 'API Error: '.$encode->errors );
-
-          } else {
-
-            return 'API Error: '.$encode->errors;
-
-          }
-
+          throw new Wordpress_Shopify_Api_Exception($encode->errors);
         }
 
       }
@@ -538,7 +354,7 @@
     *   - $excep Weather to throw exception on error or not
     * @return: Response or null on failure
     */
-    private function send_post_request ( $url, $args, $excep = false ) {
+    private function send_post_request ( $url, $args ) {
 
       $response = wp_remote_post( $url, $args );
 
@@ -552,17 +368,7 @@
           return $encode;
 
         } else {
-
-          if($excep) {
-
-            throw new Wordpress_Shopify_Api_Exception( 'API Error: '.$encode->errors );
-
-          } else {
-
-            return 'API Error: '.$encode->errors;
-
-          }
-
+          throw new Wordpress_Shopify_Api_Exception($encode->errors);
         }
 
       }
@@ -577,9 +383,7 @@
     * @return: Headers
     */
     public function get_request_headers () {
-
       return $this->headers;
-
     }
 
     /*
@@ -587,9 +391,9 @@
     * @description: Builds base url for api calls
     * @return: Base url
     */
-    public static function build_base_url () {
+    public function build_base_url () {
 
-      if( self::is_options_valid() ) {
+      if( $this->is_options_valid() ) {
 
         $base_url = [
 
@@ -613,12 +417,10 @@
     * @description: Checks that wp options are valid and set
     * @return: True or False
     */
-    private static function is_options_valid () {
+    private function is_options_valid () {
 
       if( !get_option ('prop_shopify')['shop'] ) return false;
-
       if( !get_option ('prop_shopify')['api_key'] ) return false;
-
       if( !get_option ('prop_shopify')['pass'] ) return false;
 
       return true;
@@ -631,9 +433,16 @@
     * @return: Data
     */
     public function get_data () {
+      return $this->data['data'];
+    }
 
-      return $this->data;
-
+    /*
+    * @function: get_error
+    * @description: Gets error returned from api
+    * @return: Error
+    */
+    public function get_error () {
+      return $this->data['error'];
     }
 
     /*
@@ -642,9 +451,7 @@
     * @return: Url
     */
     public function get_url () {
-
       return $this->base_url;
-
     }
 
     /*
@@ -652,10 +459,8 @@
     * @description: Call api to store response
     * @return: New Instance
     */
-    public static function forge ( $endpoint, $query = [], $exc_handler = true, $type = 'GET', $args = [] ) {
-
-      return new static( $endpoint, $query, $exc_handler, $type, $args );
-
+    public static function forge ( $endpoint, $query = [], $type = 'GET', $args = [] ) {
+      return new static( $endpoint, $query, $type, $args );
     }
 
   }
