@@ -39,7 +39,10 @@
       }
 
       foreach($this->products as $product) {
-        $array[] = Product::forge(['data' => $product]);
+        $object = new stdClass();
+        $object->product = $product;
+
+        $array[] = Product::forge(['data' => $object]);
       }
 
       return $array;

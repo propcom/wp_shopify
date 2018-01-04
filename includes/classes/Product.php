@@ -22,7 +22,7 @@
       $this->product = null;
 
       if(!isset($payload['error'])) {
-        $this->product = $payload['data'];
+        $this->product = $payload['data']->product;
       }
 
     }
@@ -85,6 +85,52 @@
       }
 
       return $this->product->image;
+    }
+
+    /*
+    * @function get_tags
+    */
+    public function get_tags () {
+
+      $tags = [];
+
+      if(!isset($this->product->tags)) {
+        return null;
+      }
+
+      foreach($tags as $tag) {
+        $tags[] = trim($tag);
+      }
+
+      return $tags;
+    }
+
+    /*
+    * @function get_group_tags
+    */
+    public function get_group_tags ($group = null) {
+
+      $groups = [];
+
+      if(!isset($this->product->tags)) {
+        return null;
+      }
+
+      $tags = explode(',', $this->product->tags);
+
+      foreach($tags as $tag) {
+        $split = explode('_', $tag);
+
+        if($group && isset($split[1]) && $group == $split[0]) {
+
+          $groups[trim($split[0])] = trim($split[1]);
+          continue;
+        }
+
+        if(isset($split[1])) $groups[trim($split[0])] = trim($split[1]);
+      }
+
+      return $groups;
     }
 
     /*

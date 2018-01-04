@@ -66,6 +66,29 @@
     }
 
     /*
+    * @return product_id
+    */
+    public static function get_product_from_uri () {
+      $product_id = null;
+      $url_segments = explode('/', $_SERVER['REQUEST_URI']);
+
+      if(empty($url_segments)) return null;
+
+      // filter segments
+      foreach($url_segments as $segment) {
+        if($segment == '') continue;
+
+        if(is_numeric($segment)) {
+
+          $product_id = intval($segment);
+          break;
+        }
+      }
+
+      return $product_id;
+    }
+
+    /*
     * @return Standard object
     */
     public function get_data () {
