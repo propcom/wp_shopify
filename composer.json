@@ -1,0 +1,11 @@
+{
+  "name": "propcom/wp_shopify",
+  "description": "Shopify plugin for wordpress",
+  "type": "wordpress-plugin",
+  "authors": [
+    {
+        "name": "Joshua Grierson",
+        "email": "joshua.grierson@propcom.co.uk"
+    }
+  ]
+}
