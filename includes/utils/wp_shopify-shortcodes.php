@@ -27,7 +27,7 @@
 
       if( $prop['id'] ) {
 
-        $product = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCT.'/'.$prop['id'].'.json' )->get_product();
+        $product = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCT.'/'.$prop['id'].'.json' )->product()->get_product();
         if( $product ) {
 
           ?>
@@ -35,8 +35,10 @@
 
               <div class="wrap">
 
-                <h2 class="title"><?= $product->title ?></h2>
-                <img src="<?= $product->images[0]->src ?>" alt="Product <?= $product->title ?>" />
+                <a href="https://<?= get_option( 'prop_shopify' )['shop'].'.myshopify.com/products/'.$product->get_product()->handle ?>">
+                  <h2 class="title"><?= $product->title ?></h2>
+                  <img src="<?= $product->get_main_image()->src ?>" alt="Product <?= $product->title ?>" />
+                </a>
 
               </div>
 
@@ -65,7 +67,7 @@
 
       if( $prop['id'] ) {
 
-        $products = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCTS, [ 'collection_id' => $prop['id'] ] )->get_products();
+        $products = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCTS, [ 'collection_id' => $prop['id'] ] )->products()->get_products();
         if( $products ) {
 
           ?><div id="wp_shopify-shortcode-collection-<?= $prop['id'] ?>" class="wp_shopify__products"><div class="wrap"><?
@@ -73,10 +75,12 @@
           foreach( $products as $product ) {
 
             ?>
-              <div id="wp_shopify-shortcode-product-<?= $product->id ?>" class="product">
+              <div id="wp_shopify-shortcode-product-<?= $product->get_product()->id ?>" class="product">
 
-                <h2 class="title"><?= $product->title ?></h2>
-                <img src="<?= $product->images[0]->src ?>" alt="Product <?= $product->title ?>" />
+                <a href="https://<?= get_option( 'prop_shopify' )['shop'].'.myshopify.com/products/'.$product->get_product()->handle ?>">
+                  <h2 class="title"><?= $product->get_product()->title ?></h2>
+                  <img src="<?= $product->get_main_image()->src ?>" alt="Product <?= $product->get_product()->title ?>" />
+                </a>
 
               </div>
             <?

@@ -173,7 +173,7 @@
     * @return: Collections
     */
     public function collections () {
-      return ( isset( $this->data['data']->custom_collections ) ? Collection_Array::forge($this->data) : null );
+      return ( isset( $this->data['data']->custom_collections ) || isset( $this->data['data']->smart_collections ) ? Collection_Array::forge($this->data) : null );
     }
 
     /*

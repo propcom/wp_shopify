@@ -3,6 +3,10 @@
  * included in this file.
  */
 
+.center {
+  text-align: center;
+}
+
 .status-label {
   margin-left: 5px;
   padding: 5px;
@@ -32,6 +36,10 @@
 .wp-shopify-modal {
   display: block;
   max-width: 95%;
+}
+
+.wp-shopify-modal .button--more {
+  margin-top: 20px;
 }
 
 .wp-shopify-modal .wsm-collection {

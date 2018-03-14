@@ -64,6 +64,30 @@
 
       ] );
 
+      register_rest_route( $namespace, '/collections/(?P<p>[\d]+)', [
+
+        [
+          'methods' => WP_REST_Server::READABLE,
+          'callback' => [ $this, 'get_collections' ],
+          'permission_callback' => [ $this, 'get_products_permissions_check' ],
+          'args' => [
+
+            'id' => [
+
+              'validate_callback' => function ( $param, $request, $key ) {
+
+								return is_numeric( $param );
+
+							}
+
+            ]
+
+          ],
+
+        ],
+
+      ] );
+
       register_rest_route( $namespace, '/variants/(?P<id>[\d]+)', [
 
         [
@@ -97,13 +121,18 @@
 
       if( $request ) {
 
-        $products = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCTS, [ 'collection_id' => $request->get_param('id') ], false )->get_products();
+        $data_object = [];
+        $products = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCTS, [ 'collection_id' => $request->get_param('id') ] )->products()->get_products();
+
+        foreach($products as $product) {
+          $data_object[] = $product->get_product();
+        }
 
         $data = [
 
           'status' => 'success',
           'code' => 200,
-          'data' => ( $products ? $products : null ),
+          'data' => ( !empty($data_object) ? $data_object : null ),
 
         ];
 
@@ -130,7 +159,7 @@
 
       if( $request ) {
 
-        $product = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCT.'/'.$request->get_param('id').'.json' )->get_product();
+        $product = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCT.'/'.$request->get_param('id').'.json' )->product()->get_product();
 
         $data = [
 
@@ -157,13 +186,51 @@
     }
 
     /**
+     * Get a list of collections from Shopify
+     */
+    public function get_collections ( $request ) {
+
+      if( $request ) {
+
+        $data_object = [];
+        $collections = Wordpress_Shopify_Api::forge( ENDPOINT_COLLECTIONS, [ 'page' => $request->get_param('p') ] )->collections()->get_collections();
+
+        foreach($collections as $collection) {
+          $data_object[] = $collection->get_collection();
+        }
+
+        $data = [
+
+          'status' => 'success',
+          'code' => 200,
+          'data' => ( !empty($data_object) ? $data_object : null ),
+
+        ];
+
+      } else {
+
+        $data = [
+
+          'status' => 'error',
+          'code' => 403,
+          'message' => 'Permission forbidden',
+
+        ];
+
+      }
+
+      return new WP_REST_Response( $data, 200 );
+
+    }
+
+    /**
      * Get a single variant
      */
     public function get_variant ( $request ) {
 
       if( $request ) {
 
-        $variant = Wordpress_Shopify_Api::forge( ENDPOINT_VARIANT.'/'.$request->get_param('id').'.json' )->get_variant();
+        $variant = Wordpress_Shopify_Api::forge( ENDPOINT_VARIANT.'/'.$request->get_param('id').'.json' )->variant()->get_variant();
 
         $data = [
 

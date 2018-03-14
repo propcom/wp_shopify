@@ -90,7 +90,7 @@
 
 			add_thickbox();
 
-			$shopify_collections = Wordpress_Shopify_Api::forge( ENDPOINT_COLLECTIONS )->collections();
+			$shopify_collections = Wordpress_Shopify_Api::forge( '/admin/smart_collections.json' )->collections()->get_collections();
 
 			ob_start();
 			?>
@@ -102,20 +102,24 @@
 							<? foreach($shopify_collections as $collection): ?>
 								<div class="wsm-collection">
 
-									<a class="js-load-products" href="javascript:void(0);" data-id="<?= $collection->id ?>">
+									<a class="js-load-products" href="javascript:void(0);" data-id="<?= $collection->get_collection()->id ?>">
 
-										<? if( isset($collection->image) ): ?>
-											<div class="image"><img src="<?= ($collection->image->src ? $collection->image->src : plugins_url( 'images/blank.png', __FILE__ ) ) ?>" alt="<?= $collection->title ?>"></div>
+										<? if( $collection->get_image() ): ?>
+											<div class="image"><img src="<?= ($collection->get_image() ? $collection->get_image() : plugins_url( 'images/blank.png', __FILE__ ) ) ?>" alt="<?= $collection->get_collection()->title ?>"></div>
 										<? endif; ?>
 										<div class="title">
-											<h3><?= $collection->title ?></h3>
-											<? if( isset($collection->created_at) ): ?><p>Created At: <?= date_i18n( 'M j, h:m a T', strtotime($collection->created_at) ) ?></p><? endif; ?>
+											<h3><?= $collection->get_collection()->title ?></h3>
+											<? if( isset($collection->get_collection()->created_at) ): ?><p>Created At: <?= date_i18n( 'M j, h:m a T', strtotime($collection->get_collection()->created_at) ) ?></p><? endif; ?>
 										</div>
 
 									</a>
 
 								</div>
 							<? endforeach; ?>
+
+							<div class="center">
+								<button class="button  button--more  js-load-more" name="More Collections">More Collections</button>
+							</div>
 
 						<? else: ?>
 							<p>No collections available. Collections are needed on your shop so as to add products.</p>

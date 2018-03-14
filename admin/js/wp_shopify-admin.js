@@ -7,7 +7,29 @@
 
 		 self.parent = $('.wp-shopify-modal');
 
-		 self.ajaxIt = function (uri, params, ctx, populate) {
+		 window.currentPage = 1;
+
+		 self.populateProducts = function (jq, ctx, populate) {
+
+			 if(jq.data && jq.data.length > 0) {
+
+				 var html = [ '<ul class="wsm-products">' ];
+
+				 for(var product in jq.data) {
+
+					 html.push('<li><a href="javascript:void(0);" data-id="' + jq.data[product].id + '">' + jq.data[product].title + ' - <span>Price: ' + jq.data[product].variants[0].price + '</span></a></li>');
+
+				 }
+
+				 html.push('</ul>');
+				 populate.append(html.join(''));
+
+				 if( ctx.find('.spinsym').length > 0 ) ctx.find('.spinsym').remove();
+
+			 }
+		 };
+
+		 self.ajaxIt = function (uri, params, ctx, populate, callback) {
 
 			 var props = {
 
@@ -29,23 +51,9 @@
 
 				 success: function (jq) {
 
-					 if(jq.data && jq.data.length > 0) {
-
-						 var html = [ '<ul class="wsm-products">' ];
-
- 						 for(var product in jq.data) {
-
- 							 html.push('<li><a href="javascript:void(0);" data-id="' + jq.data[product].id + '">' + jq.data[product].title + ' - <span>Price: ' + jq.data[product].variants[0].price + '</span></a></li>');
-
- 						 }
-
-						 html.push('</ul>');
- 						 populate.append(html.join(''));
-
- 						 if( ctx.find('.spinsym').length > 0 ) ctx.find('.spinsym').remove();
-
+					 if(typeof callback === 'function') {
+						 callback.call(this, jq, ctx, populate);
 					 }
-
 				 },
 
 				 error: function (error) {
@@ -75,7 +83,7 @@
 			 if( !$(this).hasClass('active') ) {
 
 				 $(this).addClass('active');
-				 self.ajaxIt( window.endpoint, { id: value }, populate, populate );
+				 self.ajaxIt( window.endpoint, { id: value }, populate, populate, self.populateProducts );
 
 			 } else {
 
@@ -84,6 +92,15 @@
 
 			 }
 
+		 };
+
+		 self.loadMore = function () {
+
+			 var populate = $(this).parents('.wp-shopify-modal');
+
+			 window.currentPage += 1;
+
+			 self.ajaxIt( window.endpoint, { p: window.currentPage }, populate, populate );
 		 };
 
 		 self.onChosenProduct = function () {
@@ -101,6 +118,8 @@
 		 self.init = function () {
 
 			 self.parent.find('.wsm-collection a').on('click', self.loadProducts);
+			 self.parent.find('.js-load-more').on('click', self.loadMore);
+
 			 $(document).on('click', '.wsm-products a', self.onChosenProduct);
 
 		 };

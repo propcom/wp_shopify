@@ -22,9 +22,13 @@
       $this->collection = null;
 
       if(!isset($payload['error'])) {
-        $this->collection = $payload['data']->custom_collection;
+        
+        if(isset($payload['data']->custom_collection)) {
+          $this->collection = $payload['data']->custom_collection;
+        } else {
+          $this->collection = $payload['data']->smart_collection;
+        }
       }
-
     }
 
     /*
