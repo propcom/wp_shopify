@@ -32,17 +32,7 @@
   </ul>
 </p>
 
-<h3>Shopify - Inventory Settings</h3>
-<p>
-  Inventory allows the user to track there products inventory, the below setting will track what is considered "low stock" based on below value.<br><br>
-  So for example, if the below setting is set to 10 then a product that has its inventory quantity below that, will be considered low stock and can be rendered on FE as low stock.
-  <ul>
-    <li>Inventory Stock - Allows you to track your low stock with this value</li>
-  </ul>
-  If a products inventory is 0 meaning the product is "out of stock", then this can be rendered as out of stock...this can be returned from the wp_shopify api.
-</p>
-
-<b>Please Note:</b> Your shops API Key and Pass Key are generated through a prvate app on your store, see <a href="https://help.shopify.com/api/guides/api-credentials#get-credentials-through-the-shopify-admin" target="_blank">this doc</a> for info on how to do this
+<b>Please Note:</b> Your shops API Key and Pass Key are generated through a private app on your store, see <a href="https://help.shopify.com/api/guides/api-credentials#get-credentials-through-the-shopify-admin" target="_blank">this doc</a> for info on how to do this
 
 <h3>Checkouts - Abandoned Checkouts</h3>
 <p>
