@@ -90,7 +90,7 @@
 
 			add_thickbox();
 
-			$shopify_collections = Wordpress_Shopify_Api::forge( '/admin/smart_collections.json' )->collections()->get_collections();
+			$shopify_collections = Wordpress_Shopify_Api::forge( ENDPOINT_COLLECTIONS )->collections()->get_collections();
 
 			ob_start();
 			?>
@@ -99,26 +99,38 @@
 
 						<? if( !empty($shopify_collections) ): ?>
 
-							<? foreach($shopify_collections as $collection): ?>
-								<div class="wsm-collection">
+							<div class="collection-types">
+								<p class="post-attributes-label-wrapper">
+									<label class="post-attributes-label" for="collection_type">Collection Type</label>
+								</p>
+								<select class="js-collection-type" id="collection_type" name="collection_type">
+									<option value="custom">Custom Collections</option>
+									<option value="smart">Smart Collections</option>
+								</select>
+							</div>
 
-									<a class="js-load-products" href="javascript:void(0);" data-id="<?= $collection->get_collection()->id ?>">
+							<div class="wsm-wrapper">
+								<? foreach($shopify_collections as $collection): ?>
+									<div class="wsm-collection">
 
-										<? if( $collection->get_image() ): ?>
-											<div class="image"><img src="<?= ($collection->get_image() ? $collection->get_image() : plugins_url( 'images/blank.png', __FILE__ ) ) ?>" alt="<?= $collection->get_collection()->title ?>"></div>
-										<? endif; ?>
-										<div class="title">
-											<h3><?= $collection->get_collection()->title ?></h3>
-											<? if( isset($collection->get_collection()->created_at) ): ?><p>Created At: <?= date_i18n( 'M j, h:m a T', strtotime($collection->get_collection()->created_at) ) ?></p><? endif; ?>
-										</div>
+										<a class="js-load-products" href="javascript:void(0);" data-id="<?= $collection->get_collection()->id ?>">
 
-									</a>
+											<? if( $collection->get_image() ): ?>
+												<div class="image"><img src="<?= ($collection->get_image() ? $collection->get_image() : plugins_url( 'images/blank.png', __FILE__ ) ) ?>" alt="<?= $collection->get_collection()->title ?>"></div>
+											<? endif; ?>
+											<div class="title">
+												<h3><?= $collection->get_collection()->title ?></h3>
+												<? if( isset($collection->get_collection()->created_at) ): ?><p>Created At: <?= date_i18n( 'M j, h:m a T', strtotime($collection->get_collection()->created_at) ) ?></p><? endif; ?>
+											</div>
 
-								</div>
-							<? endforeach; ?>
+										</a>
 
-							<div class="center">
-								<button class="button  button--more  js-load-more" name="More Collections">More Collections</button>
+									</div>
+								<? endforeach; ?>
+							</div>
+
+							<div class="load-more-wrapper">
+								<button class="button  button--more  js-load-more" name="More Collections" data-type="collection">More Collections</button>
 							</div>
 
 						<? else: ?>
@@ -129,6 +141,7 @@
 				</div>
 				<script type="text/javascript">
 					window.endpoint = '<?= get_home_url().'/wp-json/shopify/v1/products/' ?>';
+					window.endpointCollections = '<?= get_home_url().'/wp-json/shopify/v1/collections/' ?>';
 				</script>
 			<?
 

@@ -21,7 +21,7 @@
         [
           'methods' => WP_REST_Server::READABLE,
           'callback' => [ $this, 'get_products' ],
-          'permission_callback' => [ $this, 'get_products_permissions_check' ],
+          'permission_callback' => [ $this, 'get_permissions_check' ],
           'args' => [
 
             'id' => [
@@ -45,7 +45,7 @@
         [
           'methods' => WP_REST_Server::READABLE,
           'callback' => [ $this, 'get_product' ],
-          'permission_callback' => [ $this, 'get_products_permissions_check' ],
+          'permission_callback' => [ $this, 'get_permissions_check' ],
           'args' => [
 
             'id' => [
@@ -64,15 +64,15 @@
 
       ] );
 
-      register_rest_route( $namespace, '/collections/(?P<p>[\d]+)', [
+      register_rest_route( $namespace, '/collections/', [
 
         [
           'methods' => WP_REST_Server::READABLE,
           'callback' => [ $this, 'get_collections' ],
-          'permission_callback' => [ $this, 'get_products_permissions_check' ],
+          'permission_callback' => [ $this, 'get_permissions_check' ],
           'args' => [
 
-            'id' => [
+            'p' => [
 
               'validate_callback' => function ( $param, $request, $key ) {
 
@@ -93,7 +93,7 @@
         [
           'methods' => WP_REST_Server::READABLE,
           'callback' => [ $this, 'get_variant' ],
-          'permission_callback' => [ $this, 'get_variant_permissions_check' ],
+          'permission_callback' => [ $this, 'get_permissions_check' ],
           'args' => [
 
             'id' => [
@@ -122,7 +122,10 @@
       if( $request ) {
 
         $data_object = [];
-        $products = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCTS, [ 'collection_id' => $request->get_param('id') ] )->products()->get_products();
+        $products = Wordpress_Shopify_Api::forge( ENDPOINT_PRODUCTS, [
+          'page' => $request->get_query_params()['p'],
+          'collection_id' => $request->get_query_params()['id']
+        ] )->products()->get_products();
 
         foreach($products as $product) {
           $data_object[] = $product->get_product();
@@ -193,10 +196,19 @@
       if( $request ) {
 
         $data_object = [];
-        $collections = Wordpress_Shopify_Api::forge( ENDPOINT_COLLECTIONS, [ 'page' => $request->get_param('p') ] )->collections()->get_collections();
+        $endpoint = ENDPOINT_COLLECTIONS;
 
-        foreach($collections as $collection) {
-          $data_object[] = $collection->get_collection();
+        if($request->get_query_params()['type'] === 'smart') {
+          $endpoint = '/admin/smart_collections.json';
+        }
+
+        $collections = Wordpress_Shopify_Api::forge( $endpoint, [ 'page' => $request->get_query_params()['p'] ] )->collections()->get_collections();
+
+        if($collections) {
+
+          foreach($collections as $collection) {
+            $data_object[] = $collection->get_collection();
+          }
         }
 
         $data = [
@@ -259,21 +271,11 @@
     /**
      * Check if a given request has access to get items
      */
-    public function get_products_permissions_check( $request ) {
+    public function get_permissions_check( $request ) {
 
       return $this->logged_in;
 
     }
-
-    /**
-     * Check if a given request has access to get variant
-     */
-    public function get_variant_permissions_check( $request ) {
-
-      return $this->logged_in;
-
-    }
-
   }
 
   add_action( 'rest_api_init', function () {

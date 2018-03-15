@@ -3,8 +3,13 @@
  * included in this file.
  */
 
-.center {
+.load-more-wrapper {
+  position: relative;
   text-align: center;
+}
+
+.hide {
+  display: none;
 }
 
 .status-label {
@@ -96,4 +101,14 @@
 .wp-shopify-modal .wsm-collection .wsm-products a:hover {
   color: #fff;
   background-color: #3480a5;
+}
+
+.wp-shopify-modal .collection-types {
+  position: relative;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.wp-shopify-modal .collection-types p {
+  padding: 0 !important;
 }

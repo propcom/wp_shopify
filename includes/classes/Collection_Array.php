@@ -22,8 +22,8 @@
       $this->collections = null;
 
       if(!isset($payload['error'])) {
-        
-        if(isset($payload['data']->custom_collection)) {
+
+        if(isset($payload['data']->custom_collections)) {
           $this->collections = $payload['data']->custom_collections;
         } else {
           $this->collections = $payload['data']->smart_collections;
